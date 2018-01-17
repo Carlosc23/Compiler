@@ -7,4 +7,5 @@ gen/
 
 # IntelliJ Idea Stuff
 *.iml
-.idea
+.idea/
+out/
