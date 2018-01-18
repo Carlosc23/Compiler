@@ -4,9 +4,9 @@
 # generated files
 bin/
 gen/
+out/
+Grammars/
 
 # IntelliJ Idea Stuff
 *.iml
 .idea/
-out/
-Grammars/
