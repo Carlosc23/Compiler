@@ -1,4 +1,27 @@
-<?import javafx.scene.layout.GridPane?>
-<GridPane fx:controller="GUI.Controller"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-</GridPane>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="641.0"
+            prefWidth="847.0" xmlns="http://javafx.com/javafx/8.0.121">
+    <TabPane layoutY="102.0" prefHeight="538.0" prefWidth="847.0" tabClosingPolicy="UNAVAILABLE">
+        <Tab text="Input Test">
+            <VBox prefHeight="366.0" prefWidth="617.0"/>
+        </Tab>
+        <Tab text="Syntax Tree">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="489.0" prefWidth="861.0"/>
+        </Tab>
+    </TabPane>
+    <Separator layoutX="-2.0" layoutY="89.0" prefHeight="13.0" prefWidth="847.0"/>
+    <Label layoutX="335.0" layoutY="34.0" prefHeight="39.0" prefWidth="137.0" text="Compiler">
+        <font>
+          <Font size="27.0"/>
+        </font>
+    </Label>
+</AnchorPane>
