@@ -9,13 +9,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="723.0" prefWidth="873.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="GUI.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="723.0" prefWidth="873.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Controller">
     <TabPane layoutY="102.0" prefHeight="538.0" prefWidth="847.0" tabClosingPolicy="UNAVAILABLE">
         <Tab text="Input Test">
-            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                        prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121"
-                        xmlns:fx="http://javafx.com/fxml/1">
-                <TextArea prefHeight="497.0" prefWidth="864.0"/>
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+                <TextArea prefHeight="497.0" prefWidth="864.0" />
             </AnchorPane>
         </Tab>
         <Tab text="Syntax Tree">
@@ -30,4 +28,5 @@
     </Label>
    <Separator layoutX="13.0" layoutY="634.0" prefHeight="13.0" prefWidth="847.0" />
    <Button layoutX="31.0" layoutY="661.0" mnemonicParsing="false" onAction="#compile" prefHeight="48.0" prefWidth="118.0" text="Compile" />
+   <Button layoutX="182.0" layoutY="662.0" mnemonicParsing="false" onAction="#attach" prefHeight="48.0" prefWidth="144.0" text="Attach Grammar" />
 </AnchorPane>
