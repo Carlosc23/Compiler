@@ -9,15 +9,18 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="723.0" prefWidth="873.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="723.0" prefWidth="873.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Main">
     <TabPane layoutY="102.0" prefHeight="538.0" prefWidth="847.0" tabClosingPolicy="UNAVAILABLE">
         <Tab text="Input Test">
             <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
                 <TextArea fx:id="txta" prefHeight="497.0" prefWidth="864.0" />
             </AnchorPane>
         </Tab>
-        <Tab text="Syntax Tree">
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="489.0" prefWidth="861.0" />
+        <Tab onSelectionChanged="#showMainView" text="Syntax Tree">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="489.0" prefWidth="861.0">
+            <children>
+               <AnchorPane fx:id="pane" layoutX="6.0" layoutY="14.0" prefHeight="488.0" prefWidth="847.0" />
+            </children></AnchorPane>
         </Tab>
     </TabPane>
     <Separator layoutX="-2.0" layoutY="89.0" prefHeight="13.0" prefWidth="847.0" />

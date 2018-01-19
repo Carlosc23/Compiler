@@ -2,6 +2,7 @@ package GUI;
 
 import Grammars.DecafLexer;
 import Grammars.DecafParser;
+import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
@@ -15,7 +16,6 @@ import javax.swing.*;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 public class Controller {
     @FXML private TextArea txta;
@@ -46,6 +46,7 @@ public class Controller {
             );
             System.out.print(tree.toStringTree(parser));
             System.out.print("Ok");
+           // viewer.setScale(1.5);
             viewer.open();
         }
         catch (Exception e){
@@ -78,9 +79,6 @@ public class Controller {
         }
 
     }
-    @FXML
-    private void setText(){
-        //TODO
-        //Set del texto adjunto
-    }
+
+
 }
