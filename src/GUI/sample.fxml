@@ -5,17 +5,19 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="723.0" prefWidth="873.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Main">
     <TabPane layoutY="102.0" prefHeight="538.0" prefWidth="847.0" tabClosingPolicy="UNAVAILABLE">
-        <Tab text="Input Test">
-            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
-                <TextArea fx:id="txta" prefHeight="497.0" prefWidth="864.0" />
-            </AnchorPane>
+        <Tab text="Welcome">
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="498.0" prefWidth="851.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" />
         </Tab>
+      <Tab onSelectionChanged="#nuevoView" text="Input text">
+         <content>
+            <AnchorPane fx:id="panelInput" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="498.0" prefWidth="851.0" translateX="75.0" translateY="40.0" />
+         </content>
+      </Tab>
         <Tab onSelectionChanged="#showMainView" text="Syntax Tree">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="489.0" prefWidth="861.0">
             <children>
