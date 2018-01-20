@@ -4,16 +4,19 @@ import Grammars.DecafLexer;
 import Grammars.DecafParser;
 import javafx.application.Application;
 import javafx.embed.swing.SwingNode;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTreeCell;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import javafx.util.converter.DefaultStringConverter;
 import org.antlr.v4.gui.TreeViewer;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -28,9 +31,11 @@ import java.util.Scanner;
 
 public class Main extends Application {
     private static Stage primaryStage;
-    private VBox mainLayout;
+    private static String arbol;
     @FXML
     private AnchorPane pane;
+    @FXML
+    private AnchorPane pane2;
     @Override
     public void start(Stage primaryStage) throws Exception{
        // Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
@@ -51,14 +56,59 @@ public class Main extends Application {
         Scene scene2 = new Scene(pane);
         primaryStage.setScene(new Scene(pane, 100, 50));
         primaryStage.show();*/
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+       // Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         final SwingNode swingNode = new SwingNode();
         createAndSetSwingContent(swingNode);
+
+        //-------------------------------------------------------------------------------------------------------------
+        TreeItem<String> rootItem = new TreeItem<String> ("Tree");
+        rootItem.setExpanded(true);
+        for (int i = 1; i < 6; i++) {
+            TreeItem<String> item = new TreeItem<String> ("Item" + i);
+            TreeItem<String> item2 = new TreeItem<String> ("Item" + i);
+            item.getChildren().add(item2);
+            rootItem.getChildren().add(item);
+        }
+        TreeView<String> tree = new TreeView<String> (rootItem);
+        tree.setEditable(true);
+        tree.setCellFactory(new Callback<TreeView<String>,TreeCell<String>>(){
+            @Override
+            public TreeCell<String> call(TreeView<String> p) {
+                return new RenameMenuTreeCell();
+            }
+        });
+        //-------------------------------------------------------------------------------------------------------------
         pane.getChildren().add(swingNode); // Adding swing
+        pane2.getChildren().add(tree);
         //primaryStage.setScene(new Scene(pane, 850, 775));
         //primaryStage.show();
         System.out.print("Hola que tal");
 
+    }
+    private static class RenameMenuTreeCell extends TextFieldTreeCell<String> {
+        private ContextMenu menu = new ContextMenu();
+
+        public RenameMenuTreeCell() {
+            super(new DefaultStringConverter());
+
+            MenuItem renameItem = new MenuItem("Rename");
+            menu.getItems().add(renameItem);
+            renameItem.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent arg0) {
+                    startEdit();
+                }
+            });
+        }
+
+        @Override
+        public void updateItem(String item, boolean empty) {
+            super.updateItem(item, empty);
+
+            if (!isEditing()) {
+                setContextMenu(menu);
+            }
+        }
     }
     private void createAndSetSwingContent(final SwingNode swingNode) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -88,11 +138,12 @@ public class Main extends Application {
                     TreeViewer viewer = new TreeViewer(
                             Arrays.asList(parser.getRuleNames()),tree
                     );
-                    System.out.print(tree.toStringTree(parser));
+                    //System.out.print(Arrays.asList(parser.getRuleNames()));
+                    System.out.println(tree.toStringTree(parser));
+                    arbol = tree.toStringTree(parser);
                     System.out.print("Ok");
                      viewer.setScale(1.5);
                     //viewer.open();
-
                     panel.add(viewer);
                     swingNode.setContent(panel);
                 }
@@ -132,8 +183,8 @@ public class Main extends Application {
             );
             System.out.print(tree.toStringTree(parser));
             System.out.print("Ok");
-            // viewer.setScale(1.5);
-            viewer.open();
+             viewer.setScale(1.5);
+            //viewer.open();
         }
         catch (Exception e){
             System.out.print(e);

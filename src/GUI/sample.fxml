@@ -19,7 +19,9 @@
         <Tab onSelectionChanged="#showMainView" text="Syntax Tree">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="489.0" prefWidth="861.0">
             <children>
-               <AnchorPane fx:id="pane" layoutX="6.0" layoutY="14.0" prefHeight="488.0" prefWidth="847.0" />
+               <AnchorPane fx:id="pane" layoutX="285.0" prefHeight="502.0" prefWidth="568.0" />
+               <Separator layoutX="263.0" layoutY="-2.0" orientation="VERTICAL" prefHeight="499.0" prefWidth="0.0" />
+               <AnchorPane fx:id="pane2" layoutX="-1.0" prefHeight="497.0" prefWidth="260.0" />
             </children></AnchorPane>
         </Tab>
     </TabPane>
