@@ -142,7 +142,8 @@ public class Main extends Application {
     @FXML
     private void compile(){
         //String filename = "C:\\Users\\Carlos Calderón\\IdeaProjects\\Compiler\\src\\Grammars\\Test.txt";
-        if(arch.equals(" ")){
+        this.arch = editor.getCodeAndSnapshot();
+        if(arch.matches("[\\\\r\\\\n]+\\\\s")){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             //alert.initStyle(StageStyle.UTILITY);
             alert.setTitle("Information");
@@ -156,6 +157,8 @@ public class Main extends Application {
             CharStream stream = new ANTLRInputStream(this.editor.getCodeAndSnapshot());
             System.out.print("Hola a todos");
             DecafLexer lexer = new DecafLexer(stream);
+            lexer.removeErrorListeners();
+            lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
             //Token token = lexer.nextToken();
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             //Analisis lexico
@@ -166,6 +169,8 @@ public class Main extends Application {
             }*/
 
             DecafParser parser = new DecafParser(tokens);
+            parser.removeErrorListeners();
+            parser.addErrorListener(ThrowingErrorListener.INSTANCE);
             ParseTree tree = parser.program();
             TreeViewer viewer = new TreeViewer(
                     Arrays.asList(parser.getRuleNames()), tree
