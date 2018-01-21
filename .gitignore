@@ -10,3 +10,6 @@ Grammars/
 # IntelliJ Idea Stuff
 *.iml
 .idea/
+
+#Images
+icons/

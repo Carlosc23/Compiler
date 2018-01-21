@@ -24,7 +24,6 @@ import java.util.*;
 
 public class Main extends Application {
     private static Stage primaryStage;
-    private String arbol;
     @FXML
     private AnchorPane pane;
     @FXML
@@ -38,7 +37,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
        // Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        this.primaryStage = primaryStage;
+        Main.primaryStage = primaryStage;
         primaryStage.setTitle("Compiler");
         primaryStage.setResizable(false);
         sal();
@@ -54,9 +53,6 @@ public class Main extends Application {
     }
     public void nuevoView() {
         this.editor = new CodeEditor(arch);
-        //panelInput.setLayoutX(300);
-        //panelInput.setLayoutY(300);
-        //panelInput.setPadding(editor,new Insets(0, 0, 0, 8));
         panelInput.getChildren().add(editor);
     }
     public void showMainView() {
@@ -155,50 +151,44 @@ public class Main extends Application {
 
             alert.showAndWait();
         }
-        else{
-            try{
+        else try {
 
-                CharStream stream = new ANTLRInputStream(this.editor.getCodeAndSnapshot());
-                System.out.print("Hola a todos");
-                DecafLexer lexer = new DecafLexer(stream);
-                Token token = lexer.nextToken();
-                CommonTokenStream tokens = new CommonTokenStream(lexer);
-                //Analisis lexico
+            CharStream stream = new ANTLRInputStream(this.editor.getCodeAndSnapshot());
+            System.out.print("Hola a todos");
+            DecafLexer lexer = new DecafLexer(stream);
+            //Token token = lexer.nextToken();
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            //Analisis lexico
             /*while(token.getType()!=(DecafLexer.EOF)){
                 System.out.print("Tipo["+token.getType()+"],Token["+
                 token.getText()+"]");
                 token = lexer.nextToken();
             }*/
 
-                // anasl
+            DecafParser parser = new DecafParser(tokens);
+            ParseTree tree = parser.program();
+            TreeViewer viewer = new TreeViewer(
+                    Arrays.asList(parser.getRuleNames()), tree
+            );
+            System.out.print(tree.toStringTree(parser));
+           // String arbol = tree.toStringTree(parser);
+            nuevo(tree, parser, "program");
+            System.out.println("Sali de la recursion");
 
-                DecafParser parser = new DecafParser(tokens);
-                ParseTree tree = parser.program();
-                TreeViewer viewer = new TreeViewer(
-                        Arrays.asList(parser.getRuleNames()),tree
-                );
-                System.out.print(tree.toStringTree(parser));
-                this.arbol = tree.toStringTree(parser);
-                nuevo(tree,parser,"program");
-                System.out.println("Sali de la recursion");
-                //for (String s:st)
-                //   System.out.println(s);
-                Collections.reverse(reglas);
-                String t="";
-                for (Ruler r:reglas){
-                    System.out.println(r.toString());
-                    System.out.println("****************");
-                    t+=r.toString()+"\n"+"****************\n";
-                }
-                area.setText(t);
-                arch = this.editor.getCodeAndSnapshot();
-                System.out.print("Ok");
-                viewer.setScale(1.5);
-                //viewer.open();
+            Collections.reverse(reglas);
+            String t = "";
+            for (Ruler r : reglas) {
+                System.out.println(r.toString());
+                System.out.println("****************");
+                t += r.toString() + "\n" + "****************\n";
             }
-            catch (Exception e){
-                System.out.print(e);
-            }
+            area.setText(t);
+            arch = this.editor.getCodeAndSnapshot();
+            System.out.print("Ok");
+            viewer.setScale(1.5);
+            //viewer.open();
+        } catch (Exception e) {
+            //System.out.print(e);
         }
 
 
@@ -226,12 +216,7 @@ public class Main extends Application {
                 System.out.println(representedToken.getType());
                 System.out.println(representedToken.getText());
                 r2.setName(p);
-                r2.addRuler((String)representedToken.getText());
-
-                //   System.out.println(representedToken.getTokenSource());
-                //nodes.add(representedToken.getText());
-                //espacio= espacio.replace(" ","");
-                //break;
+                r2.addRuler(representedToken.getText());
             }
 
         }

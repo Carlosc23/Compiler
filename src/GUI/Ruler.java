@@ -4,7 +4,7 @@ package GUI;
 import java.util.ArrayList;
 
 public class Ruler {
-    public String name;
+    private String name;
 
     public String getName() {
         return name;
@@ -14,7 +14,7 @@ public class Ruler {
         return tok;
     }
 
-    public ArrayList<String> tok = new ArrayList<String>();
+    private ArrayList<String> tok = new ArrayList<>();
 
     public void addRuler(String gg){
         tok.add(gg);
@@ -27,8 +27,7 @@ public class Ruler {
         for(String j:tok){
             temp+="-->"+j+"\n";
         }
-        String s="Parent: "+this.name+"\nChildren: "+temp;
-        return s;
+        return "Parent: "+ this.name+"\nChildren: "+temp;
     }
 }
 

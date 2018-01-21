@@ -17,29 +17,31 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="671.0" prefWidth="844.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Main">
     <TabPane layoutY="102.0" prefHeight="538.0" prefWidth="847.0" tabClosingPolicy="UNAVAILABLE">
         <Tab text="Welcome">
-         <content>
+            <content>
+                <StackPane prefHeight="150.0" prefWidth="200.0">
+                    <children>
+                        <ImageView fitHeight="570.0" fitWidth="868.0" pickOnBounds="true">
+                            <image>
+                                <Image url="@../icons/back.jpg"/>
+                            </image>
+                        </ImageView>
+                        <Pane opacity="0.45" prefHeight="570.0" prefWidth="606.0"
+                              style="-fx-background-color: #000000;">
+                            <children>
+                                <Text fill="WHITE" layoutX="260.0" layoutY="111.0" strokeType="OUTSIDE"
+                                      strokeWidth="0.0" text="WELCOME!">
+                                    <font>
+                                        <Font name="Roboto Medium" size="56.0"/>
+                                    </font>
+                                </Text>
+                                <Label layoutX="250.0" layoutY="197.0" prefHeight="60.0" prefWidth="364.0"
+                                       text="This is a Compiler designed to the language DECAF" textFill="WHITE"/>
+                            </children>
+                        </Pane>
+                    </children>
+                </StackPane>
+            </content>
 
-         </content>
-         <content>
-            <StackPane prefHeight="150.0" prefWidth="200.0">
-                <children>
-                    <ImageView fitHeight="570.0" fitWidth="868.0" pickOnBounds="true">
-                        <image>
-                            <Image url="@back.jpg" />
-                        </image>
-                    </ImageView>
-                    <Pane opacity="0.45" prefHeight="570.0" prefWidth="606.0" style="-fx-background-color: #000000;">
-                        <children>
-                            <Text fill="WHITE" layoutX="260.0" layoutY="111.0" strokeType="OUTSIDE" strokeWidth="0.0" text="WELCOME!">
-                                <font>
-                                    <Font name="Roboto Medium" size="56.0" />
-                                </font>
-                            </Text>
-                        <Label layoutX="250.0" layoutY="197.0" prefHeight="60.0" prefWidth="364.0" text="This is a Compiler designed to the language DECAF" textFill="WHITE" />
-                        </children></Pane>
-                </children>
-                    </StackPane>
-         </content>
         </Tab>
       <Tab onSelectionChanged="#nuevoView" text="Input text">
          <content>

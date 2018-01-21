@@ -12,7 +12,7 @@ import javafx.scene.web.WebView;
  */
 public class CodeEditor extends StackPane {
     /** a webview used to encapsulate the CodeMirror JavaScript. */
-    final WebView webview = new WebView();
+    private final WebView webview = new WebView();
 
     /** a snapshot of the code to be edited kept for easy initilization and reversion of editable code. */
     private String editingCode;
@@ -64,9 +64,9 @@ public class CodeEditor extends StackPane {
     }
 
     /** revert edits of the code to the last edit snapshot taken. */
-    public void revertEdits() {
+   /* public void revertEdits() {
         setCode(editingCode);
-    }
+    }*/
 
     /**
      * Create a new code editor.
