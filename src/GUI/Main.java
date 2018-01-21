@@ -24,8 +24,10 @@ import javafx.util.converter.DefaultStringConverter;
 import org.antlr.v4.gui.TreeViewer;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 
 import javax.swing.*;
 import java.io.File;
@@ -40,10 +42,13 @@ public class Main extends Application {
     @FXML
     private AnchorPane pane;
     @FXML
+    private TextArea area;
+    @FXML
     private AnchorPane panelInput;
     @FXML
     private AnchorPane pane2;
     private CodeEditor editor;
+    private static ArrayList<Ruler> reglas= new ArrayList<Ruler>();
     @Override
     public void start(Stage primaryStage) throws Exception{
        // Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
@@ -256,6 +261,18 @@ public class Main extends Application {
             );
             System.out.print(tree.toStringTree(parser));
             this.arbol = tree.toStringTree(parser);
+            nuevo(tree,parser,"program");
+            System.out.println("Sali de la recursion");
+            //for (String s:st)
+            //   System.out.println(s);
+            Collections.reverse(reglas);
+            String t="";
+            for (Ruler r:reglas){
+                System.out.println(r.toString());
+                System.out.println("****************");
+                t+=r.toString()+"\n"+"****************";
+            }
+            area.setText(t);
             System.out.print("Ok");
              viewer.setScale(1.5);
             //viewer.open();
@@ -264,6 +281,41 @@ public class Main extends Application {
             System.out.print(e);
         }
 
+    }
+    private static void nuevo(ParseTree tree,DecafParser parser,String p){
+        Ruler r2 = new Ruler();
+        for (int i=0;i<tree.getChildCount();i++){
+
+            if(tree.getChild(i) instanceof RuleContext){
+                List<String> nodes2 = new ArrayList<String>();
+                ParseTree tree2 = tree.getChild(i);
+                //System.out.println("---");
+                RuleContext r = (RuleContext) tree.getChild(i);
+                //nodes.add(parser.getRuleNames()[r.getRuleIndex()]);
+                System.out.println(p+" "+parser.getRuleNames()[r.getRuleIndex()]);
+                r2.setName(p);
+                r2.addRuler((String)parser.getRuleNames()[r.getRuleIndex()]);
+                //reglas.add(r2);
+                nuevo(tree2,parser,parser.getRuleNames()[r.getRuleIndex()]);
+                // espacio+=" ";
+                //espacio=parser.getRuleNames()[r.getRuleIndex()];
+                //modulos.add(espacio);
+            }
+            else if (tree.getChild(i) instanceof TerminalNodeImpl){
+                Token representedToken = ((TerminalNodeImpl) tree.getChild(i)).getSymbol();
+                System.out.println(representedToken.getType());
+                System.out.println(representedToken.getText());
+                r2.setName(p);
+                r2.addRuler((String)representedToken.getText());
+
+                //   System.out.println(representedToken.getTokenSource());
+                //nodes.add(representedToken.getText());
+                //espacio= espacio.replace(" ","");
+                //break;
+            }
+
+        }
+        reglas.add(r2);
     }
     @FXML
     private void attach(){
