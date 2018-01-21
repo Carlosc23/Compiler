@@ -134,49 +134,61 @@ public class Main extends Application {
     @FXML
     private void compile(){
         //String filename = "C:\\Users\\Carlos Calderón\\IdeaProjects\\Compiler\\src\\Grammars\\Test.txt";
-        try{
+        if(arch.equals(" ")){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            //alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("Information");
+            alert.setHeaderText("Warning");
+            alert.setContentText("Please insert code before compile");
 
-            CharStream stream = new ANTLRInputStream(this.editor.getCodeAndSnapshot());
-            System.out.print("Hola a todos");
-            DecafLexer lexer = new DecafLexer(stream);
-            Token token = lexer.nextToken();
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-            //Analisis lexico
+            alert.showAndWait();
+        }
+        else{
+            try{
+
+                CharStream stream = new ANTLRInputStream(this.editor.getCodeAndSnapshot());
+                System.out.print("Hola a todos");
+                DecafLexer lexer = new DecafLexer(stream);
+                Token token = lexer.nextToken();
+                CommonTokenStream tokens = new CommonTokenStream(lexer);
+                //Analisis lexico
             /*while(token.getType()!=(DecafLexer.EOF)){
                 System.out.print("Tipo["+token.getType()+"],Token["+
                 token.getText()+"]");
                 token = lexer.nextToken();
             }*/
 
-            // anasl
+                // anasl
 
-            DecafParser parser = new DecafParser(tokens);
-            ParseTree tree = parser.program();
-            TreeViewer viewer = new TreeViewer(
-                    Arrays.asList(parser.getRuleNames()),tree
-            );
-            System.out.print(tree.toStringTree(parser));
-            this.arbol = tree.toStringTree(parser);
-            nuevo(tree,parser,"program");
-            System.out.println("Sali de la recursion");
-            //for (String s:st)
-            //   System.out.println(s);
-            Collections.reverse(reglas);
-            String t="";
-            for (Ruler r:reglas){
-                System.out.println(r.toString());
-                System.out.println("****************");
-                t+=r.toString()+"\n"+"****************";
+                DecafParser parser = new DecafParser(tokens);
+                ParseTree tree = parser.program();
+                TreeViewer viewer = new TreeViewer(
+                        Arrays.asList(parser.getRuleNames()),tree
+                );
+                System.out.print(tree.toStringTree(parser));
+                this.arbol = tree.toStringTree(parser);
+                nuevo(tree,parser,"program");
+                System.out.println("Sali de la recursion");
+                //for (String s:st)
+                //   System.out.println(s);
+                Collections.reverse(reglas);
+                String t="";
+                for (Ruler r:reglas){
+                    System.out.println(r.toString());
+                    System.out.println("****************");
+                    t+=r.toString()+"\n"+"****************\n";
+                }
+                area.setText(t);
+                arch = this.editor.getCodeAndSnapshot();
+                System.out.print("Ok");
+                viewer.setScale(1.5);
+                //viewer.open();
             }
-            area.setText(t);
-            arch = this.editor.getCodeAndSnapshot();
-            System.out.print("Ok");
-             viewer.setScale(1.5);
-            //viewer.open();
+            catch (Exception e){
+                System.out.print(e);
+            }
         }
-        catch (Exception e){
-            System.out.print(e);
-        }
+
 
     }
     private static void nuevo(ParseTree tree,DecafParser parser,String p){
