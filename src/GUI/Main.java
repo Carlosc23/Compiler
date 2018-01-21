@@ -43,7 +43,7 @@ public class Main extends Application {
     private AnchorPane panelInput;
     @FXML
     private AnchorPane pane2;
-
+    private CodeEditor editor;
     @Override
     public void start(Stage primaryStage) throws Exception{
        // Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
@@ -61,7 +61,7 @@ public class Main extends Application {
 
     }
     public void nuevoView() throws IOException {
-        final CodeEditor editor = new CodeEditor("class Hola");
+        this.editor = new CodeEditor("");
         //panelInput.setLayoutX(300);
         //panelInput.setLayoutY(300);
         //panelInput.setPadding(editor,new Insets(0, 0, 0, 8));
@@ -97,7 +97,7 @@ public class Main extends Application {
         String arbol2=this.arbol;
         //TODO hacer el TreeView
 
-        TreeItem<String> rootItem = new TreeItem<String> ("Tree");
+       /* TreeItem<String> rootItem = new TreeItem<String> ("Tree");
         rootItem.setExpanded(true);
         ArrayList<ArrayList<String>> arr2 = new ArrayList<ArrayList<String>>();
         ArrayList<String> arr = new ArrayList<String>();
@@ -129,10 +129,11 @@ public class Main extends Application {
             }
         });
         //-------------------------------------------------------------------------------------------------------------
-        pane.getChildren().add(swingNode); // Adding swing
-        pane2.getChildren().add(tree);
+
+        pane2.getChildren().add(tree);*/
         //primaryStage.setScene(new Scene(pane, 850, 775));
         //primaryStage.show();
+        pane.getChildren().add(swingNode); // Adding swing
         System.out.print("Hola que tal");
 
     }
@@ -283,7 +284,7 @@ public class Main extends Application {
                 JOptionPane.showMessageDialog(null, "Archivo invalido");
             }
             //txta.setText(arch);
-
+            this.editor.setCode(arch);
         }
         else {
             System.out.print("File selection cancelled.");
