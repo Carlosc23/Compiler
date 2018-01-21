@@ -60,11 +60,23 @@ public class Main extends Application {
         panelInput.getChildren().add(editor);
     }
     public void showMainView() {
-        SwingNode swingNode = new SwingNode();
-        createAndSetSwingContent(swingNode);
-        //String arbol2=this.arbol;
-        pane.getChildren().removeAll();
-        pane.getChildren().add(swingNode); // Adding swing
+        if(!arch.equals(" ")){
+            SwingNode swingNode = new SwingNode();
+            createAndSetSwingContent(swingNode);
+            //String arbol2=this.arbol;
+            pane.getChildren().removeAll();
+            pane.getChildren().add(swingNode); // Adding swing
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            //alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("Information");
+            alert.setHeaderText("Warning");
+            alert.setContentText("Please insert code and then compile, to see the Syntax Tree");
+
+            alert.showAndWait();
+        }
+
 
     }
     private void createAndSetSwingContent(SwingNode swingNode) {
