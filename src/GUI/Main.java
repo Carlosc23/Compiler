@@ -16,13 +16,13 @@ import org.antlr.v4.gui.TreeViewer;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
-
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 public class Main extends Application {
+    /* Atributos*/
     private static Stage primaryStage;
     @FXML
     private AnchorPane pane;
@@ -34,15 +34,24 @@ public class Main extends Application {
     private CodeEditor editor;
     private String arch = " ";
     private static ArrayList<Ruler> reglas= new ArrayList<>();
+
+    /**
+     * @param primaryStage Stage
+     * @throws Exception Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception{
-       // Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+
         Main.primaryStage = primaryStage;
         primaryStage.setTitle("Compiler");
         primaryStage.setResizable(false);
         sal();
 
     }
+
+    /**
+     * @throws IOException Exception
+     */
     private void sal() throws IOException {
 
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
@@ -51,10 +60,18 @@ public class Main extends Application {
 
 
     }
+
+    /**
+     *
+     */
     public void nuevoView() {
         this.editor = new CodeEditor(arch);
         panelInput.getChildren().add(editor);
     }
+
+    /**
+     *
+     */
     public void showMainView() {
         if(!arch.equals(" ")){
             SwingNode swingNode = new SwingNode();
@@ -69,12 +86,14 @@ public class Main extends Application {
             alert.setTitle("Information");
             alert.setHeaderText("Warning");
             alert.setContentText("Please insert code and then compile, to see the Syntax Tree");
-
             alert.showAndWait();
         }
 
-
     }
+
+    /**
+     * @param swingNode Nodo de swing
+     */
     private void createAndSetSwingContent(SwingNode swingNode) {
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -139,17 +158,20 @@ public class Main extends Application {
             }
         });
     }
+
+    /**
+     * Metodo que se encarga
+     */
     @FXML
     private void compile(){
         //String filename = "C:\\Users\\Carlos Calderón\\IdeaProjects\\Compiler\\src\\Grammars\\Test.txt";
         this.arch = editor.getCodeAndSnapshot();
-        if(arch.matches("[\\\\r\\\\n]+\\\\s")){
+        if(arch.matches("[\\\\r\\\\n]+\\\\s+") ||arch.equals("")){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             //alert.initStyle(StageStyle.UTILITY);
             alert.setTitle("Information");
             alert.setHeaderText("Warning");
             alert.setContentText("Please insert code before compile");
-
             alert.showAndWait();
         }
         else try {
@@ -190,6 +212,12 @@ public class Main extends Application {
             arch = this.editor.getCodeAndSnapshot();
             System.out.print("Ok");
             viewer.setScale(1.5);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            //alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("Information");
+            alert.setHeaderText("Compiled");
+            alert.setContentText("Your code is already compiled");
+            alert.showAndWait();
             //viewer.open();
         } catch (Exception e) {
             //System.out.print(e);
@@ -197,6 +225,12 @@ public class Main extends Application {
 
 
     }
+
+    /**
+     * @param tree Arbol sintactico a ordenar
+     * @param parser Parser generado
+     * @param p Raiz del arbol
+     */
     private static void nuevo(ParseTree tree,DecafParser parser,String p){
         Ruler r2 = new Ruler();
         for (int i=0;i<tree.getChildCount();i++){
@@ -226,6 +260,10 @@ public class Main extends Application {
         }
         reglas.add(r2);
     }
+
+    /**
+     *
+     */
     @FXML
     private void attach(){
 
@@ -254,6 +292,10 @@ public class Main extends Application {
         }
 
     }
+
+    /**
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }
