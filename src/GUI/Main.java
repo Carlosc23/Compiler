@@ -148,19 +148,18 @@ public class Main extends Application {
                     }*/
                     //this.arbol = (String)tree.toStringTree(parser);
                     System.out.println("Ok");
+                    viewer.save("tree.jpg");
                     viewer.setScale(0.7);
-                    try {
-                        viewer.save("tree.jpg");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (PrintException e) {
-                        e.printStackTrace();
-                    }
+
                     //viewer.open();
                     panel.removeAll();
                     panel.add(viewer);
                     swingNode.setContent(panel);
                 } catch (RecognitionException ignored) {
+                } catch (PrintException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
             }
