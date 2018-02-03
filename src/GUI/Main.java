@@ -16,6 +16,8 @@ import org.antlr.v4.gui.TreeViewer;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
+
+import javax.print.PrintException;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
@@ -147,6 +149,13 @@ public class Main extends Application {
                     //this.arbol = (String)tree.toStringTree(parser);
                     System.out.println("Ok");
                     viewer.setScale(0.7);
+                    try {
+                        viewer.save("tree.jpg");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (PrintException e) {
+                        e.printStackTrace();
+                    }
                     //viewer.open();
                     panel.removeAll();
                     panel.add(viewer);
