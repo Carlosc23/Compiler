@@ -30,4 +30,3 @@ public class Ruler {
         return "Parent: "+ this.name+"\nChildren: "+temp;
     }
 }
-

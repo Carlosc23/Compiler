@@ -21,9 +21,9 @@ public class ThrowingErrorListener extends BaseErrorListener {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         //alert.initStyle(StageStyle.UTILITY);
         alert.setTitle("Error");
-       alert.setHeaderText("Warning");
+        alert.setHeaderText("Warning");
         alert.setContentText(String.valueOf(new ParseCancellationException("line " + line + ":" + charPositionInLine + " " + msg)));
-       alert.showAndWait();
+        alert.showAndWait();
         //JOptionPane.showMessageDialog(null,String.valueOf(new ParseCancellationException("line " + line + ":" + charPositionInLine + " " + msg)));
         throw new ParseCancellationException("line " + line + ":" + charPositionInLine + " " + msg);
     }

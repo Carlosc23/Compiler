@@ -102,8 +102,8 @@ public class Main extends Application {
                 JPanel panel = new JPanel();
 
                 try {
-                   // System.out.println("happy");
-                   // System.out.println(arch);
+                    // System.out.println("happy");
+                    // System.out.println(arch);
                     CharStream stream = new ANTLRInputStream(arch);
                     //System.out.print("Hola a todos");
                     DecafLexer lexer = new DecafLexer(stream);
@@ -125,9 +125,8 @@ public class Main extends Application {
                             Arrays.asList(parser.getRuleNames()), tree
                     );
                     //System.out.print(Arrays.asList(parser.getRuleNames()));
-                   // System.out.println(tree.toStringTree(parser));
+                    // System.out.println(tree.toStringTree(parser));
                    /* for(int i =0;i<tree.getChildCount();i++){
-
                         System.out.println(" "+tree.getChild(i));
                         //***********
                         ParseTree tree2 = tree.getChild(i);
@@ -147,7 +146,7 @@ public class Main extends Application {
                     }*/
                     //this.arbol = (String)tree.toStringTree(parser);
                     System.out.println("Ok");
-                    viewer.setScale(1.5);
+                    viewer.setScale(0.7);
                     //viewer.open();
                     panel.removeAll();
                     panel.add(viewer);
@@ -197,15 +196,15 @@ public class Main extends Application {
                     Arrays.asList(parser.getRuleNames()), tree
             );
             //System.out.print(tree.toStringTree(parser));
-           // String arbol = tree.toStringTree(parser);
+            // String arbol = tree.toStringTree(parser);
             nuevo(tree, parser, "program");
             //System.out.println("Sali de la recursion");
 
             Collections.reverse(reglas);
             String t = "";
             for (Ruler r : reglas) {
-               // System.out.println(r.toString());
-               // System.out.println("****************");
+                // System.out.println(r.toString());
+                // System.out.println("****************");
                 t += r.toString() + "\n" + "****************\n";
             }
             area.setText(t);
@@ -240,7 +239,7 @@ public class Main extends Application {
                 //System.out.println("---");
                 RuleContext r = (RuleContext) tree.getChild(i);
                 //nodes.add(parser.getRuleNames()[r.getRuleIndex()]);
-               // System.out.println(p+" "+parser.getRuleNames()[r.getRuleIndex()]);
+                // System.out.println(p+" "+parser.getRuleNames()[r.getRuleIndex()]);
                 r2.setName(p);
                 r2.addRuler(parser.getRuleNames()[r.getRuleIndex()]);
                 //reglas.add(r2);
@@ -251,7 +250,7 @@ public class Main extends Application {
             }
             else if (tree.getChild(i) instanceof TerminalNodeImpl){
                 Token representedToken = ((TerminalNodeImpl) tree.getChild(i)).getSymbol();
-               // System.out.println(representedToken.getType());
+                // System.out.println(representedToken.getType());
                 //System.out.println(representedToken.getText());
                 r2.setName(p);
                 r2.addRuler(representedToken.getText());
@@ -288,7 +287,7 @@ public class Main extends Application {
         }
         else {
             System.out.print("File selection cancelled.");
-           // txta.setText("Hola mjn");
+            // txta.setText("Hola mjn");
         }
 
     }
