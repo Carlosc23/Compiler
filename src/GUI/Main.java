@@ -123,6 +123,8 @@ public class Main extends Application {
 
                     DecafParser parser = new DecafParser(tokens);
                     ParseTree tree = parser.program();
+                    parser.removeErrorListeners();
+
                     TreeViewer viewer = new TreeViewer(
                             Arrays.asList(parser.getRuleNames()), tree
                     );
