@@ -1,0 +1,7 @@
+class Hola {
+int que;
+void algo (){
+    char c;
+
+	}
+}
