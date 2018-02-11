@@ -159,7 +159,7 @@ public class Main extends Application {
             alert.showAndWait();
         }
         else try {
-
+            //TODO compile this only once because it does it twice in node of swing.
             CharStream stream = new ANTLRInputStream(this.editor.getCodeAndSnapshot());
             DecafLexer lexer = new DecafLexer(stream);
             lexer.removeErrorListeners();
