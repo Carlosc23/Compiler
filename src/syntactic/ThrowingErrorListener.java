@@ -1,4 +1,4 @@
-package GUI;
+package syntactic;
 
 
 import javafx.scene.control.Alert;
@@ -7,7 +7,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
-import javax.swing.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 // Inspired in : https://stackoverflow.com/questions/18132078/handling-errors-in-antlr4

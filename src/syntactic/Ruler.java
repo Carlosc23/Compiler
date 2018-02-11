@@ -1,4 +1,4 @@
-package GUI;
+package syntactic;
 
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package GUI;
+package gui;
 
 
 import javafx.scene.layout.StackPane;
@@ -17,37 +17,34 @@ public class CodeEditor extends StackPane {
     /** a snapshot of the code to be edited kept for easy initilization and reversion of editable code. */
     private String editingCode;
 
-    /**
-     * a template for editing code - this can be changed to any template derived from the
-     * supported modes at http://codemirror.net to allow syntax highlighted editing of
-     * a wide variety of languages.
-     */
-
-    private final String editingTemplate =
-            "<!doctype html>" +
-                    "<html>" +
-                    "<head>" +
-                    "  <link rel=\"stylesheet\" href=\"http://codemirror.net/lib/codemirror.css\">" +
-                    "<link rel=\"stylesheet\" href=\"http://codemirror.net/theme/monokai.css\">"+
-                    "  <script src=\"http://codemirror.net/lib/codemirror.js\"></script>" +
-                    "  <script src=\"http://codemirror.net/mode/clike/clike.js\"></script>" +
-                    "</head>" +
-                    "<body>" +
-                    "<form><textarea id=\"code\" name=\"code\">\n" +
-                    "${code}" +
-                    "</textarea></form>" +
-                    "<script>" +
-                    "  var editor = CodeMirror.fromTextArea(document.getElementById(\"code\"), {" +
-                    "    lineNumbers: true," +
-                    "    matchBrackets: true," +
-                    "    mode: \"text/x-csharp\"" +
-                    "  });" +
-                    "</script>" +
-                    "</body>" +
-                    "</html>";
-
     /** applies the editing template to the editing code to create the html+javascript source for a code editor. */
     private String applyEditingTemplate() {
+        /*
+      a template for editing code - this can be changed to any template derived from the
+      supported modes at http://codemirror.net to allow syntax highlighted editing of
+      a wide variety of languages.
+     */
+        String editingTemplate = "<!doctype html>" +
+                "<html>" +
+                "<head>" +
+                "  <link rel=\"stylesheet\" href=\"http://codemirror.net/lib/codemirror.css\">" +
+                "<link rel=\"stylesheet\" href=\"http://codemirror.net/theme/monokai.css\">" +
+                "  <script src=\"http://codemirror.net/lib/codemirror.js\"></script>" +
+                "  <script src=\"http://codemirror.net/mode/clike/clike.js\"></script>" +
+                "</head>" +
+                "<body>" +
+                "<form><textarea id=\"code\" name=\"code\">\n" +
+                "${code}" +
+                "</textarea></form>" +
+                "<script>" +
+                "  var editor = CodeMirror.fromTextArea(document.getElementById(\"code\"), {" +
+                "    lineNumbers: true," +
+                "    matchBrackets: true," +
+                "    mode: \"text/x-csharp\"" +
+                "  });" +
+                "</script>" +
+                "</body>" +
+                "</html>";
         return editingTemplate.replace("${code}", editingCode);
     }
 
@@ -63,7 +60,7 @@ public class CodeEditor extends StackPane {
         return editingCode;
     }
 
-    /** revert edits of the code to the last edit snapshot taken. */
+    /* revert edits of the code to the last edit snapshot taken. */
    /* public void revertEdits() {
         setCode(editingCode);
     }*/

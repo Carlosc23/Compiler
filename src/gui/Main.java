@@ -1,7 +1,7 @@
-package GUI;
+package gui;
 
-import Grammars.DecafLexer;
-import Grammars.DecafParser;
+import grammar.DecafLexer;
+import grammar.DecafParser;
 import javafx.application.Application;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
@@ -16,8 +16,9 @@ import org.antlr.v4.gui.TreeViewer;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
+import syntactic.Ruler;
+import syntactic.ThrowingErrorListener;
 
-import javax.print.PrintException;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
@@ -104,8 +105,6 @@ public class Main extends Application {
                 JPanel panel = new JPanel();
 
                 try {
-                    // System.out.println("happy");
-                    // System.out.println(arch);
                     CharStream stream = new ANTLRInputStream(arch);
                     //System.out.print("Hola a todos");
                     DecafLexer lexer = new DecafLexer(stream);
@@ -128,26 +127,6 @@ public class Main extends Application {
                     TreeViewer viewer = new TreeViewer(
                             Arrays.asList(parser.getRuleNames()), tree
                     );
-                    //System.out.print(Arrays.asList(parser.getRuleNames()));
-                    // System.out.println(tree.toStringTree(parser));
-                   /* for(int i =0;i<tree.getChildCount();i++){
-                        System.out.println(" "+tree.getChild(i));
-                        //***********
-                        ParseTree tree2 = tree.getChild(i);
-                        //System.out.println(tree2.toStringTree(parser));
-                        //System.out.println(tree2.getChildCount());
-                        if(tree2.getChildCount()!=0){
-                            for(int j = 0; j< tree2.getChildCount(); j++){
-                                System.out.println("  "+tree2.getChild(j));
-                                ParseTree tree3 = tree2.getChild(j);
-                                if(tree3.getChildCount()!=0){
-                                    for(int k = 0; k< tree3.getChildCount(); k++){
-                                        System.out.println("  "+tree3.getChild(k));
-                                    }
-                                }
-                            }
-                        }
-                    }*/
                     //this.arbol = (String)tree.toStringTree(parser);
                     System.out.println("Ok");
                     //viewer.save("tree.jpg");
@@ -169,7 +148,7 @@ public class Main extends Application {
      */
     @FXML
     private void compile(){
-        //String filename = "C:\\Users\\Carlos Calderón\\IdeaProjects\\Compiler\\src\\Grammars\\Test.txt";
+        //String filename = "C:\\Users\\Carlos Calderón\\IdeaProjects\\Compiler\\src\\grammar\\Test.txt";
         this.arch = editor.getCodeAndSnapshot();
         if(arch.matches("[\\\\r\\\\n]+\\\\s+") ||arch.equals("")){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -275,7 +254,7 @@ public class Main extends Application {
     private void attach(){
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(new File("C:\\Users\\Carlos Calderón\\IdeaProjects\\Compiler\\src\\Grammars"));
+        fileChooser.setInitialDirectory(new File("C:\\Users\\Carlos Calderón\\IdeaProjects\\Compiler\\src\\grammar"));
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             //System.out.print("File selected: " + selectedFile.getName());
@@ -301,7 +280,7 @@ public class Main extends Application {
     }
 
     /**
-     * @param args
+     * @param args args
      */
     public static void main(String[] args) {
         launch(args);

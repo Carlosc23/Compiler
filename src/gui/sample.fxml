@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="671.0" prefWidth="844.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Main">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="671.0" prefWidth="844.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Main">
     <TabPane layoutY="102.0" prefHeight="538.0" prefWidth="847.0" tabClosingPolicy="UNAVAILABLE">
         <Tab text="Welcome">
 
@@ -34,14 +34,14 @@
             </StackPane>
         </Tab>
         <Tab onSelectionChanged="#nuevoView" text="Input text">
-            <content>
-                <AnchorPane fx:id="panelInput" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="814.0" translateX="75.0" translateY="40.0">
-                    <children>
-                        <Button layoutX="202.0" layoutY="388.0" mnemonicParsing="false" onAction="#compile" prefHeight="48.0" prefWidth="118.0" text="Compile" />
-                        <Button layoutX="20.0" layoutY="388.0" mnemonicParsing="false" onAction="#attach" prefHeight="48.0" prefWidth="144.0" text="Attach Grammar" />
-                        <Separator layoutX="-72.0" layoutY="374.0" prefHeight="13.0" prefWidth="893.0" />
-                    </children></AnchorPane>
-            </content>
+            <AnchorPane fx:id="panelInput" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                        minWidth="-Infinity" prefHeight="460.0" prefWidth="814.0" translateX="75.0" translateY="40.0">
+                <Button layoutX="202.0" layoutY="388.0" mnemonicParsing="false" onAction="#compile"
+                        prefHeight="48.0" prefWidth="118.0" text="Compile"/>
+                <Button layoutX="20.0" layoutY="388.0" mnemonicParsing="false" onAction="#attach" prefHeight="48.0"
+                        prefWidth="144.0" text="Attach grammar"/>
+                <Separator layoutX="-72.0" layoutY="374.0" prefHeight="13.0" prefWidth="893.0"/>
+            </AnchorPane>
         </Tab>
         <Tab onSelectionChanged="#showMainView" text="Syntax Tree">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="489.0" prefWidth="861.0">
