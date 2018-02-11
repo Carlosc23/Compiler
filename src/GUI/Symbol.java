@@ -2,6 +2,6 @@ package GUI;
 
 import java.util.*;
 
-public class SymbolTable {
+public class Symbol {
 
 }

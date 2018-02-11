@@ -150,18 +150,14 @@ public class Main extends Application {
                     }*/
                     //this.arbol = (String)tree.toStringTree(parser);
                     System.out.println("Ok");
-                    viewer.save("tree.jpg");
-                    viewer.setScale(0.7);
-
+                    //viewer.save("tree.jpg");
+                    //viewer.setScale(0.5);
+                    viewer.setSize(700, 700);
                     //viewer.open();
                     panel.removeAll();
                     panel.add(viewer);
                     swingNode.setContent(panel);
                 } catch (RecognitionException ignored) {
-                } catch (PrintException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
 
             }
@@ -207,6 +203,7 @@ public class Main extends Application {
             );
             //System.out.print(tree.toStringTree(parser));
             // String arbol = tree.toStringTree(parser);
+            reglas.clear();
             nuevo(tree, parser, "program");
             //System.out.println("Sali de la recursion");
 
@@ -217,6 +214,7 @@ public class Main extends Application {
                 // System.out.println("****************");
                 t += r.toString() + "\n" + "****************\n";
             }
+            area.setText("");
             area.setText(t);
             arch = this.editor.getCodeAndSnapshot();
             System.out.print("Ok");
