@@ -254,7 +254,7 @@ public class Main extends Application {
     private void attach(){
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(new File("C:\\Users\\Carlos Calderón\\IdeaProjects\\Compiler\\src\\grammar"));
+        fileChooser.setInitialDirectory(new File("C:\\Users\\Carlos Calderón\\IdeaProjects\\Compiler\\src\\programs"));
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             //System.out.print("File selected: " + selectedFile.getName());
