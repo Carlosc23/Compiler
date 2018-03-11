@@ -1,7 +1,6 @@
 class Hola{
 
-int que;
-char c;
 void main(){
+ que = 0;
 }
 }
