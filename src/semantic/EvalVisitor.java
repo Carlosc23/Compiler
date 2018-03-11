@@ -242,7 +242,16 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
         return "int";
     }
 
-
+    @Override
+    public String visitChar_literal(DecafParser.Char_literalContext ctx){
+        System.out.println("__visitCharLiteral, " + ctx.getText());
+        return "char";
+    }
+    @Override
+    public String visitBool_literal(DecafParser.Bool_literalContext ctx){
+        System.out.println("__visitBool_literal, " + ctx.getText());
+        return "boolean";
+    }
     /**
      * visitAssignation is the part of the syntax tree where a value is assigned to a variable
      * previously declared. If not, it returns an error.
@@ -419,7 +428,53 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
         return "Error";
     }
 
+    /**
+     * @param ctx
+     * @return
+     */
+    @Override
+    public String visitDeclaredMethodCall(DecafParser.DeclaredMethodCallContext ctx){
+        System.out.println("visitDeclaredMethodCall");
+        String id = ctx.getChild(0).getText();
+        String signature = "";
+        //It will verify if the children are more than 3, because the minimum children
+        // are ID ( ), in case it the call has more than 3 parameters it will enter in this condition
+        if(ctx.getChildCount() > 3){
+            Integer i = 0;
+            while(i<ctx.getChildCount()-3){
+                if(!ctx.getChild(2+i).getText().equals(",")){
+                    System.out.println("Parameter " + i + " " + ctx.getChild(2+i).getText());
+                    signature += visit(ctx.getChild(2+i).getChild(0));
+                }
+                i++;
+            }
+        }
 
+        if(signature.equals("")){
+            System.out.println("Method : "+ id + ", no Signature ");
+        } else {
+            System.out.println("Method : "+ id + ", Signature: " + signature);
+        }
+        id = id + signature; // This line is important because the name of the methods are
+        // in the scope are in the  format idsignature
+        // If the method doesnt exist in any scope it will not return a result
+        if(symbolTablePerScope.peek().verify(id, 0) != 0){
+            Integer scope_number_up = symbolTablePerScope.peek().verify(id, 0);
+            System.out.println("visitDeclaredMethodCall : "+String.valueOf(scope_number_up));
+            String result = symbolTablePerScope.peek().getType(id, scope_number_up);
+            System.out.println(result);
+            return result;
+        }
+
+        errors.append("***Error 5.***\n-->Decaf.BadMethodCall\n");
+        errors.append(id);
+        errors.append(" in line ");
+        errors.append(ctx.getStart().getLine());
+        errors.append("  not found the method\n");
+        System.out.println(errors);
+        return "Error";
+
+    }
 
 
 
