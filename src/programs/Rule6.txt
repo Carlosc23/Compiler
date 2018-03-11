@@ -1,0 +1,11 @@
+class Hola{
+
+int suma(int a, int b){
+    return 0;
+}
+
+void main(){
+ int a;
+ a = suma(0,2);
+}
+}

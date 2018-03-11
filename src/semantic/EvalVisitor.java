@@ -428,7 +428,8 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
         return "Error";
     }
 
-    /**
+    /** visitDeclaredMethod represents the part of the syntax tree where a method
+     * is called for something with parameters or without them.
      * @param ctx
      * @return
      */
@@ -476,7 +477,77 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
 
     }
 
+    /**
+     * visitIfBlock represents the part of the syntax tree where it is declared an
+     * if statement. Also it generates a new Scope and a new father and maybe
+     * childrens scopes.
+     * @param ctx
+     * @return
+     */
+    @Override
+    public String visitIfBlock(DecafParser.IfBlockContext ctx){
+        System.out.println("visitIfBlock");
+        scope_counter += 1;
+        System.out.println("--Scope control : " + String.valueOf(scope_counter));
+        System.out.println(symbolTablePerScope.peek().getScope_id());
+        System.out.println(symbolTablePerScope.peek().getChildren().toString());
+        //Represent a new scope with his parent
+        SymbolTable ifscope = new SymbolTable(scope_counter, symbolTablePerScope.peek());
+        // Add actual scope this scope to represent a children
+        symbolTablePerScope.peek().getChildren().add(ifscope);
+        // Add the ifscope to the stack
+        symbolTablePerScope.push(ifscope);
+        //If (orExpression)
+        String bool = visit(ctx.getChild(2));
+        System.out.println(bool);
+        System.out.println("gg");
+        symbolTablePerScope.pop();
+        // if expression in if is not type boolean then it is an error
+        if(!bool.equals("boolean")){
+            errors.append("***Error 10.***\n-->Decaf.IfBlockException\n ");
+            errors.append("in line "+ctx.getStart().getLine());
+            errors.append(" the parameter is not a boolean type\n");
+            System.out.println(errors);
+            return "Error";
+        }
+        System.out.println("******************************************************\n");
+        return "";
+    }
 
+
+    /**
+     * @param ctx
+     * @return
+     */
+    @Override
+    public String visitWhileBlock(DecafParser.WhileBlockContext ctx){
+        System.out.println("visitWhileBlock");
+        scope_counter += 1;
+        System.out.println("--Scope control : " + String.valueOf(scope_counter));
+        System.out.println(symbolTablePerScope.peek().getScope_id());
+        System.out.println(symbolTablePerScope.peek().getChildren().toString());
+        //Represent a new scope with his parent
+        SymbolTable whilescope = new SymbolTable(scope_counter, symbolTablePerScope.peek());
+        // Add actual scope this scope to represent a children
+        symbolTablePerScope.peek().getChildren().add(whilescope);
+        // Add the whilescope to the stack
+        symbolTablePerScope.push(whilescope);
+        //while (orExpression)
+        String bool = visit(ctx.getChild(2));
+        System.out.println(bool);
+        System.out.println("gg");
+        symbolTablePerScope.pop();
+        // if expression in while is not type boolean then it is an error
+        if(!bool.equals("boolean")){
+            errors.append("***Error 10.***\n-->Decaf.WhileBlockException\n ");
+            errors.append("in line "+ctx.getStart().getLine());
+            errors.append(" the parameter is not a boolean type\n");
+            System.out.println(errors);
+            return "Error";
+        }
+        System.out.println("******************************************************\n");
+        return "";
+    }
 
 
 }
