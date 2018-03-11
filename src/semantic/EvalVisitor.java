@@ -388,7 +388,7 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
     public String visitBasic(DecafParser.BasicContext ctx){
         System.out.println("visitBasic");
         System.out.println(ctx.getText());
-        String result = visitChildren(ctx);
+        String result = visitChildren(ctx); // Children could be call of methods
         System.out.println(result);
         System.out.println("Soy todo lo que soy");
         System.out.println("******************************************************");
