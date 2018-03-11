@@ -16,6 +16,7 @@ import org.antlr.v4.gui.TreeViewer;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
+import semantic.EvalVisitor;
 import syntactic.Ruler;
 import syntactic.ThrowingErrorListener;
 
@@ -180,6 +181,10 @@ public class Main extends Application {
             TreeViewer viewer = new TreeViewer(
                     Arrays.asList(parser.getRuleNames()), tree
             );
+            EvalVisitor eval = new EvalVisitor();
+            ;
+            System.out.println(eval.visit(tree));
+
             //System.out.print(tree.toStringTree(parser));
             // String arbol = tree.toStringTree(parser);
             reglas.clear();

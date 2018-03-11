@@ -67,10 +67,10 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
             System.out.println(symbolTablePerScope.size());
             //< System.out.println("Symbol Table "+SymbolTable);
             return result;
-        } else {
+        }
+        else {
             errors.append("***Error 3.***\n-->Decaf.MissingMainMethod\n");
             errors.append("---->There is no main method declared in the class\n");
-            //System.out.println("***Error 3.***\n-->Decaf.MissingMainMethod\n");
             System.out.println(errors);
             return "Error";
         }
@@ -80,20 +80,22 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
 
 
     /**
-     *
+     * visitMethodDeclaration is the the part of the syntax tree where the methods are declared.
+     * In normal conditions (without parameters) it only has 5 parameters
      * @param ctx
      * @return
      */
     @Override
     public String visitMethodDeclaration(DecafParser.MethodDeclarationContext ctx){
         System.out.println("visitMethodDeclaration");
-        ArrayList<String> parameters = new ArrayList<>();
-        String signature = "";
+        ArrayList<String> parameters = new ArrayList<>(); // List of parameters of a method
+        String signature = ""; // String to represent the signature of a method
         String id = ctx.getChild(1).getText();
-        if(id.equals("main")){
+        if(id.equals("main")){ // If the id of the method is main (which represents "main") a flag is raised
             System.out.println("Oh wow im in the main method");
-            visitMain = true;
+            visitMain = true; // Flag to know if this methodDeclaration is the main method
         }
+
         String varType = ctx.getChild(0).getText();
         methodReturnType = varType;
         /* This condition verifies if a method has parameters, the number is 5 because in normal
@@ -127,7 +129,7 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
                 i++;
             }
         }
-
+        // If the method has no signature (no parameters)
         if(signature.equals("")){
             System.out.println("Method : "+ id + ", doesnt have Signature ");
         }
@@ -140,9 +142,10 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
             }
         }
         id = id + signature;
-        scope_counter += 1;
+        scope_counter += 1; // A new scope is traveled
+        // If the method is new theres no problem
         if(symbolTablePerScope.peek().verify(id, 0) == 0){
-            System.out.println("HEred the id: "+id);
+            System.out.println("Heres the id: "+id);
             symbolTablePerScope.peek().insert(id, new Symbol(id, parameters, varType));
             //Make a reference to the father of the scope of the current method
             SymbolTable symbTable = new SymbolTable(scope_counter, symbolTablePerScope.peek());
@@ -152,15 +155,16 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
             symbolTablePerScope.push(symbTable);
         }
         else {
-            errors.append("--MethodDeclaration ");
-            errors.append(id);
-            errors.append(" in line ");
+            errors.append("***Error 1.***\n-->Decaf.MethodRepeatedInScope\n ");
+            errors.append("---> on variable: "+id+",");
+            errors.append(" in line: ");
             errors.append(ctx.getStart().getLine());
-            errors.append(" has been already defined\n");
+            System.out.println(errors);
             methodReturnType = "";
             symbolTablePerScope.pop();
             return "Error";
         }
+
         System.out.println("--Scope control : "+scope_counter);
         System.out.println("******************************************************");
         String result = visitChildren(ctx);
@@ -225,34 +229,94 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
             return "Error";
         }
     }
+
+    /**
+     * visitInt_literal is the part of the syntax tree where a number of type Integer
+     * is represented. Usually used in declaredMethodCall or assignation.
+     * @param ctx
+     * @return
+     */
     @Override
-    public String visitStructDeclaration(DecafParser.StructDeclarationContext ctx){
-        System.out.println("visitStructDeclaration");
-        String id = ctx.getChild(1).getText();
-        System.out.println("--Scope counter : "+scope_counter);
-        if(symbolTablePerScope.peek().verify(id, 0) == 0){
-            //scope counter plus;
-            scope_counter += 1;
-            //father
-            SymbolTable symbTable = new SymbolTable(scope_counter, symbolTablePerScope.peek());
-            symbolTablePerScope.peek().insert(id, new Symbol(id, symbTable, id));
-            //children
-            symbolTablePerScope.peek().getChildren().add(symbTable);
-            //new current symbTable
-            symbolTablePerScope.push(symbTable);
-            String result = visitChildren(ctx);
-            symbolTablePerScope.pop();
-            //add struct[]
-            symbolTablePerScope.peek().insert(id+"[]", new Symbol(id+"[]", symbTable, id+"[]"));
-            return result;
-        } else {
-            errors.append("--Struct ");
-            errors.append(id);
-            errors.append(" in line ");
-            errors.append(ctx.getStart().getLine());
-            errors.append(" has been already defined\n");
+    public String visitInt_literal(DecafParser.Int_literalContext ctx){
+        System.out.println("__visitInt_literal, " + ctx.getText());
+        return "int";
+    }
+
+
+    /**
+     * visitAssignation is the part of the syntax tree where a value is assigned to a variable
+     * previously declared. If not, it returns an error.
+     * @param ctx
+     * @return
+     */
+    @Override
+    public String visitAssignation(DecafParser.AssignationContext ctx){
+        System.out.println("visitAssignation");
+        System.out.println(String.valueOf(ctx.getChildCount()));
+        //location EQ (expression | scan) DOTCOMMA
+        System.out.println("******************************************************");
+        // Visit location, it refers to the specific variable where the value will be stored.
+        String location = visit(ctx.getChild(0));
+        System.out.println("******************************************************");
+        // It refers to the symbol "="
+        String eq = ctx.getChild(1).getText();
+        // It refers to the type of expresion that would be stored in the location
+        // Basically that location and expression are the same type, is the purpose
+        String expressionscan = visit(ctx.getChild(2));
+        //print
+        System.out.println("**locationType : "+location);
+        System.out.println("**eq : "+eq);
+        System.out.println("**(expression|scan)Type : "+expressionscan);
+        //Return Error if types are different
+        if(location.equals(expressionscan) || location.equals("Error")){
+            return location;
+        }
+        else {
+            errors.append("***Error 14.***\n-->Decaf.AssignationException\n ");
+            errors.append("in line "+ctx.getStart().getLine());
+            errors.append(" the types are different\n");
+            System.out.println(errors);
             return "Error";
         }
+    }
+
+    /**
+     * visitVariable is the method where the method visitLocation searches if the name
+     * of the variable used to store a value/expression exists in scope. If not exists
+     * returns error.
+     * @param ctx
+     * @return
+     */
+    public String visitVariable(DecafParser.VariableContext ctx){
+        System.out.println("******************************************************");
+        System.out.println("visitVariable");
+        String id = ctx.getChild(0).getText();
+        System.out.println(id);
+        Integer scope_number_up = symbolTablePerScope.peek().verify(id, 0);
+        // This condition verifies if the variable exists in current scope or in
+        //scopte parent
+        if(scope_number_up!= 0){
+            System.out.println(String.valueOf(scope_number_up));
+            System.out.println(symbolTablePerScope.peek().getType(id, scope_number_up));
+            return symbolTablePerScope.peek().getType(id, scope_number_up);
+        }
+        // If the variable doesnt exists it will return Error 2
+        errors.append("***Error 2.***\n-->Decaf.VariableNotFound\n ");
+        errors.append("--Variable ");
+        errors.append(id);
+        errors.append(" in line ");
+        errors.append(ctx.getStart().getLine());
+        errors.append("  not found the variable\n");
+        System.out.println(errors);
+        return "Error";
+    }
+    @Override
+    public String visitLocation(DecafParser.LocationContext ctx){
+        System.out.println("visitLocation");
+        System.out.println(locationDotLocation);
+        return visitChildren(ctx);
+
+
     }
 
     /**
@@ -265,6 +329,7 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
         System.out.println("visitVarDeclaration");
         String varType = ctx.getChild(0).getText();
         String id = ctx.getChild(1).getText();
+        System.out.println(varType+" "+id);
         // If variable is not in the scope
         if((symbolTablePerScope.peek().verify(id, 0) == 0) || (symbolTablePerScope.peek().verify(id, 0) != 1)){
             //varType (ID [ NUM ] ;)
@@ -303,10 +368,10 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
         }
     }
 
-    //basic
 
+    //TODO comment in javadoc this methods
     /**
-     * Ya
+     *
      * @param ctx
      * @return
      */
@@ -316,13 +381,42 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
         System.out.println(ctx.getText());
         String result = visitChildren(ctx);
         System.out.println(result);
+        System.out.println("Soy todo lo que soy");
+        System.out.println("******************************************************");
         return result;
     }
-    @Override
-    public String visitExpressionInP(DecafParser.ExpressionInPContext ctx){
-        System.out.println("visitExpressionInP");
-        System.out.println(ctx.getText());
-        return visit(ctx.getChild(1));
+
+
+   /* @Override
+    public String visitBlock(DecafParser.BlockContext ctx){
+        System.out.println("VisitBlock");
+        visit(ctx.getChild(1));
+        return "";
+    }*/
+    /**
+     * @param ctx
+     * @return
+     */
+   @Override
+    public String visitReturnBlock(DecafParser.ReturnBlockContext ctx){
+        System.out.println("visitReturnBlock");
+        System.out.println(methodReturnType);
+        visitReturnBlock = true;
+        //RETURN (nExpression) DOTCOMMA ;
+        String currentReturnType = visit(ctx.getChild(1));
+        System.out.println("currentReturnType"+currentReturnType);
+        if(methodReturnType.equals(currentReturnType)){
+            System.out.println("The return and the type of the method is the same");
+            return "";
+        }
+        errors.append("--ReturnBlock Method type is ");
+        errors.append(methodReturnType);
+        errors.append(" and the return type is ");
+        errors.append(currentReturnType);
+        errors.append(" in line ");
+        errors.append(ctx.getStart().getLine());
+        System.out.println(errors);
+        return "Error";
     }
 
 
