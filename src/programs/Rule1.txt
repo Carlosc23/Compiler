@@ -1,0 +1,7 @@
+class Hola{
+
+int que;
+int que;
+void main(){
+}
+}
