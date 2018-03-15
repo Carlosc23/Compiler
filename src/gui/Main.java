@@ -33,6 +33,8 @@ public class Main extends Application {
     @FXML
     private TextArea area;
     @FXML
+    private TextArea panelOutput;
+    @FXML
     private AnchorPane panelInput;
     @FXML
     private CodeEditor editor;
@@ -200,6 +202,9 @@ public class Main extends Application {
             }
             area.setText("");
             area.setText(t);
+            String t2 = String.valueOf(eval.getErrors());
+            panelOutput.setText("");
+            panelOutput.setText(t2);
             arch = this.editor.getCodeAndSnapshot();
             System.out.print("Ok");
             viewer.setScale(1.5);
@@ -209,6 +214,8 @@ public class Main extends Application {
             alert.setHeaderText("Compiled");
             alert.setContentText("Your code is already compiled");
             alert.showAndWait();
+            System.out.println(String.valueOf(eval.getErrors()));
+
             //viewer.open();
         } catch (Exception e) {
             //System.out.print(e);
@@ -261,11 +268,13 @@ public class Main extends Application {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File("C:\\Users\\Carlos Calderón\\IdeaProjects\\Compiler\\src\\programs"));
         File selectedFile = fileChooser.showOpenDialog(null);
+
         if (selectedFile != null) {
             //System.out.print("File selected: " + selectedFile.getName());
             Scanner scan_file;
 
             try {
+                arch="";
                 scan_file = new Scanner(selectedFile);
                 while(scan_file.hasNext()){
                     arch += scan_file.nextLine()+"\n";

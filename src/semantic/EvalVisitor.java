@@ -15,7 +15,6 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
     /* Attributes*/
     private Integer scope_counter; // id to have control in where scope the compilation goes
     private Stack<SymbolTable> symbolTablePerScope; // table
-    private ArrayList<SymbolTable> symbolTablePerScopeArray;
     private SymbolTable globalTable; //global scope
     private String locationDotLocation;
     private StringBuffer errors; //Variable to display in the GUI the semantic errors
@@ -35,7 +34,7 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
     public EvalVisitor(){
         scope_counter = 0;
         symbolTablePerScope = new Stack<>();
-        symbolTablePerScopeArray = new ArrayList<>();
+        //symbolTablePerScopeArray = new ArrayList<>();
         scope_counter += 1;
         globalTable = new SymbolTable(scope_counter, null);
         errors = new StringBuffer();
@@ -172,11 +171,12 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
         System.out.println(visitReturnBlock);
         if(visitReturnBlock && methodReturnType.equals("void")){
             System.out.println("Somos void");
+            errors.append("***Error 7.***\n-->Decaf.ValueReturnException\n ");
             errors.append("--MethodDeclaration ");
             errors.append(id);
             errors.append(" in line ");
             errors.append(ctx.getStart().getLine());
-            errors.append(" return void but has a return block with other type");
+            errors.append(" return void but has a return block with other type\n");
             System.out.println(errors);
             result = "Error";
         }
@@ -362,8 +362,7 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
                 symbolTablePerScope.peek().insert(id, new Symbol(id, false, 0, varType));
             }
             System.out.println("******************************************************");
-            String result = visitChildren(ctx);
-            return result;
+            return visitChildren(ctx);
         }
         // If variable is already in scope, error
         else {
@@ -394,7 +393,30 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
         System.out.println("******************************************************");
         return result;
     }
-
+    @Override
+    public String visitBasicExpression(DecafParser.BasicExpressionContext ctx){
+        System.out.println("visitBasicExpression");
+        System.out.println(ctx.getChild(0));
+        System.out.println("Todotodo");
+        if (ctx.getChildCount()>=2){
+            System.out.println("Tengo 2 ");
+            String b = ctx.getChild(0).getText();
+            System.out.println();
+            String a = visit(ctx.getChild(1));
+            System.out.println("--"+ a);
+            System.out.println("proye");
+            String id = ctx.getChild(1).getText();
+            if(b.equals("!") && !a.equals("boolean") ){
+                errors.append("***Error 13.***\n-->Decaf.cond_opsTypeException\n ");
+                errors.append(" in line: ");
+                errors.append(ctx.getStart().getLine()+"\n");
+                errors.append("Variable: "+ id +" has to be boolean\n");
+                System.out.println(errors);
+                return "Error";
+            }
+        }
+        return  visitChildren(ctx);
+    }
 
    /* @Override
     public String visitBlock(DecafParser.BlockContext ctx){
@@ -418,12 +440,11 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
             System.out.println("The return and the type of the method is the same");
             return "";
         }
-        errors.append("--ReturnBlock Method type is ");
-        errors.append(methodReturnType);
-        errors.append(" and the return type is ");
-        errors.append(currentReturnType);
-        errors.append(" in line ");
-        errors.append(ctx.getStart().getLine());
+       errors.append("***Error 8.***\n-->Decaf.ReturnBlockException\n ");
+       errors.append("in line "+ctx.getStart().getLine()+"\n");
+       errors.append("the type of the method is : "+methodReturnType+"\n");
+       errors.append(" and the return type is ");
+       errors.append(currentReturnType+"\n they are not the same type");
         System.out.println(errors);
         return "Error";
     }
@@ -548,6 +569,222 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
         System.out.println("******************************************************\n");
         return "";
     }
+    @Override
+    public String visitOrExpression(DecafParser.OrExpressionContext ctx){
+        System.out.println("visitOrExpression");
+        System.out.println(String.valueOf(ctx.getChildCount()));
+        // If it the type exp || exp
+        if(ctx.getChildCount() == 3){
+            //orExpression OR andExpression
+            String orExpression = visit(ctx.getChild(0));
+            String or = visit(ctx.getChild(1));
+            String andExpression = visit(ctx.getChild(2));
+            //print
+            System.out.println("**orExpressionType : "+orExpression);
+            System.out.println("**or : "+or);
+            System.out.println("**andExpressionType : "+andExpression);
+            if(orExpression.equals(andExpression)){
+                return "boolean";
+            } else {
+                errors.append("--OrExpression in line ");
+                errors.append(ctx.getStart().getLine());
+                errors.append(" the types are different\n");
+                return "Error";
+            }
+        }
+        else {
+            //andExpression
+            String andExpression = visit(ctx.getChild(0));
+            System.out.println("**andExpressionType : "+andExpression);
+            return andExpression;
+        }
+    }
+    @Override
+    public String visitAndExpression(DecafParser.AndExpressionContext ctx){
+        System.out.println("visitAndExpression");
+        System.out.println(String.valueOf(ctx.getChildCount()));
+        if(ctx.getChildCount() == 3){
+            //andExpression AND equalsExpression
+            String andExpression = visit(ctx.getChild(0));
+            String and = visit(ctx.getChild(1));
+            String equalsExpression = visit(ctx.getChild(2));
+            //print
+            System.out.println("**andExpressionType : "+andExpression);
+            System.out.println("**and : "+and);
+            System.out.println("**equalsExpressionType : "+equalsExpression);
+            if(!andExpression.equals(equalsExpression)){
+                errors.append("--AndExpression in line ");
+                errors.append(ctx.getStart().getLine());
+                errors.append(" the types are different\n");
+                return andExpression;
+            } else {
+                return "Error";
+            }
+        } else {
+            //equalsExpression
+            String equalsExpression = visitChildren(ctx);
+            System.out.println("**equalsExpressionType : "+equalsExpression);
+            return equalsExpression;
+        }
+    }
 
+    @Override
+    public String visitEqualsExpression(DecafParser.EqualsExpressionContext ctx){
+        System.out.println("visitEqualsExpression");
+        System.out.println(String.valueOf(ctx.getChildCount()));
+        if(ctx.getChildCount() == 3){
+            //equalsExpression eq_op relationExpression
+            String equalsExpression = visit(ctx.getChild(0));
+            String eq_op = visit(ctx.getChild(1));
+            String relationExpression = visit(ctx.getChild(2));
+            //print
+            System.out.println("**equalsExpressionType : "+equalsExpression);
+            System.out.println("**eq_op : "+eq_op);
+            System.out.println("**relationExpressionType : "+relationExpression);
+            //both most be boolean
+            if(equalsExpression.equals(relationExpression)){
+                return "boolean";
+            } else {
+                errors.append("***Error 12.***\n-->Decaf.eq_opsTypeException\n ");
+                errors.append("in line "+ctx.getStart().getLine());
+                errors.append(" the types of the operands are different\n");
+                System.out.println(errors);
+                return "Error";
+            }
+        } else {
+            //relationExpression
+            String relationExpression = visit(ctx.getChild(0));
+            System.out.println("**relationExpressionType : "+relationExpression);
+            return relationExpression;
+        }
+    }
+
+    @Override
+    public String visitRelationExpression(DecafParser.RelationExpressionContext ctx){
+        System.out.println("visitRelationExpression");
+        System.out.println(String.valueOf(ctx.getChildCount()));
+        if(ctx.getChildCount() == 3){
+            //relationExpression rel_op addSubsExpression
+            String relationExpression = visit(ctx.getChild(0));
+            String rel_op = visit(ctx.getChild(1));
+            String addSubsExpression = visit(ctx.getChild(2));
+            //print
+            System.out.println("**relationExpresionType : "+relationExpression);
+            System.out.println("**rel_op : "+rel_op);
+            System.out.println("**addSubsExpression : "+addSubsExpression);
+            if((relationExpression.equals(addSubsExpression)) && (relationExpression.equals("int"))){
+                return "boolean";
+            } else {
+                errors.append("***Error 11.***\n-->Decaf.rel_opTypeException\n ");
+                errors.append("in line "+ctx.getStart().getLine());
+                errors.append(" the types are not int\n");
+                System.out.println(errors);
+                return "Error";
+            }
+        } else {
+            //addSubsExpression
+            String addSubsExpression = visit(ctx.getChild(0));
+            System.out.println("**addSubsExpression : "+addSubsExpression);
+            return addSubsExpression;
+        }
+    }
+
+    //AddSubs and MulDiv operations
+
+    @Override
+    public String visitAddSubsExpression(DecafParser.AddSubsExpressionContext ctx){
+        System.out.println("visitAddSubsExpression");
+        System.out.println(String.valueOf(ctx.getChildCount()));
+        if(ctx.getChildCount() == 3){
+            //addSubsExpression as_op mulDivExpression
+            String addSubsExpression = visit(ctx.getChild(0));
+            String as_op = ctx.getChild(1).getText();
+            String mulDivExpression = visit(ctx.getChild(2));
+            //print
+            System.out.println("**addSubsExpressionType : "+addSubsExpression);
+            System.out.println("**as_op : "+as_op);
+            System.out.println("**mulDivExpressionType : "+mulDivExpression);
+            //Return Error if types are different, and both most be int
+            if((addSubsExpression.equals(mulDivExpression)) && (addSubsExpression.equals("int"))){
+                return addSubsExpression;
+            }
+            else {
+                errors.append("***Error 11.***\n-->Decaf.arith_opTypeException\n ");
+                errors.append("in line "+ctx.getStart().getLine());
+                errors.append(" the types are not int\n");
+                System.out.println(errors);
+                return "Error";
+            }
+        } else {
+            //MulDivExpression
+            String mulDivExpression = visitChildren(ctx);
+            System.out.println("**mulDivExpressionType : "+mulDivExpression);
+            return mulDivExpression;
+        }
+
+    }
+
+    @Override
+    public String visitMulDivExpression(DecafParser.MulDivExpressionContext ctx){
+        System.out.println("visitMulDivExpression");
+        System.out.println(String.valueOf(ctx.getChildCount()));
+        if(ctx.getChildCount() == 3){
+            //mulDivExpression md_op prExpression
+            String mulDivExpression = visit(ctx.getChild(0));
+            String md_op = ctx.getChild(1).getText();
+            String prExpression = visit(ctx.getChild(2));
+            //print
+            System.out.println("**mulDivExpressionType : "+mulDivExpression);
+            System.out.println("**md_op : " + md_op);
+            System.out.println("**prExpressionType : "+prExpression);
+            //Return Error if types are different, and both most be int
+            if((mulDivExpression.equals(prExpression)) && (mulDivExpression.equals("int"))){
+                return mulDivExpression;
+            } else {
+                errors.append("***Error 11.***\n-->Decaf.arith_opTypeException\n ");
+                errors.append("in line "+ctx.getStart().getLine());
+                errors.append(" the types are not int\n");
+                System.out.println(errors);
+                return "Error";
+            }
+        } else {
+            //prExpression
+            String prExpression = visitChildren(ctx);
+            System.out.println("**prExpressionType : "+prExpression);
+            return prExpression;
+        }
+    }
+
+    @Override
+    public String visitStructDeclaration(DecafParser.StructDeclarationContext ctx){
+        System.out.println("visitStructDeclaration");
+        String id = ctx.getChild(1).getText();
+        System.out.println("--Scope counter : "+scope_counter);
+        if(symbolTablePerScope.peek().verify(id, 0) == 0){
+            //scope counter plus;
+            scope_counter += 1;
+            //father
+            SymbolTable symbTable = new SymbolTable(scope_counter, symbolTablePerScope.peek());
+            symbolTablePerScope.peek().insert(id, new Symbol(id, symbTable, id));
+            System.out.println(symbolTablePerScope.peek().getScope_id()+""+symbolTablePerScope.peek());
+            //children
+            symbolTablePerScope.peek().getChildren().add(symbTable);
+            //new current symbTable
+            symbolTablePerScope.push(symbTable);
+            String result = visitChildren(ctx);
+            symbolTablePerScope.pop();
+            //add struct[]
+            symbolTablePerScope.peek().insert(id+"[]", new Symbol(id+"[]", symbTable, id+"[]"));
+            System.out.println(symbolTablePerScope.peek().getScope_id()+""+symbolTablePerScope.peek());
+            return result;
+        } else {
+            errors.append("--Struct ");
+            errors.append(id);
+            errors.append(" in line ");
+            errors.append(ctx.getStart().getLine());
+            errors.append(" has been already defined\n");
+            return "Error";
+        }
+    }
 
 }
