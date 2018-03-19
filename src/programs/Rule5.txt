@@ -5,6 +5,7 @@ int suma(int a, int b){
 }
 
 void main(){
- //suma('c','e');
+ suma(2,'e');
 }
 }
+

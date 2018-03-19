@@ -184,12 +184,12 @@ public class Main extends Application {
                     Arrays.asList(parser.getRuleNames()), tree
             );
             EvalVisitor eval = new EvalVisitor();
-            ;
+            System.out.println("Llegue hasta aqui");
             System.out.println(eval.visit(tree));
-
+            System.out.println("Llegue hasta aqui dos veces");
             //System.out.print(tree.toStringTree(parser));
             // String arbol = tree.toStringTree(parser);
-            reglas.clear();
+            //reglas.clear();
             nuevo(tree, parser, "program");
             //System.out.println("Sali de la recursion");
 
@@ -205,7 +205,8 @@ public class Main extends Application {
             String t2 = String.valueOf(eval.getErrors());
             panelOutput.setText("");
             panelOutput.setText(t2);
-            arch = this.editor.getCodeAndSnapshot();
+
+            //arch = this.editor.getCodeAndSnapshot();
             System.out.print("Ok");
             viewer.setScale(1.5);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -215,6 +216,7 @@ public class Main extends Application {
             alert.setContentText("Your code is already compiled");
             alert.showAndWait();
             System.out.println(String.valueOf(eval.getErrors()));
+
 
             //viewer.open();
         } catch (Exception e) {

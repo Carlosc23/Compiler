@@ -65,6 +65,7 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
             symbolTablePerScope.pop();
             System.out.println(symbolTablePerScope.size());
             //< System.out.println("Symbol Table "+SymbolTable);
+            System.out.println("Espiritu");
             return result;
         }
         else {
@@ -265,7 +266,9 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
         //location EQ (expression | scan) DOTCOMMA
         System.out.println("******************************************************");
         // Visit location, it refers to the specific variable where the value will be stored.
+        System.out.println("Porter1");
         String location = visit(ctx.getChild(0));
+        System.out.println("Porter2");
         System.out.println("******************************************************");
         // It refers to the symbol "="
         String eq = ctx.getChild(1).getText();
@@ -287,6 +290,42 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
             System.out.println(errors);
             return "Error";
         }
+    }
+    @Override
+    public String visitArrayVariable(DecafParser.ArrayVariableContext ctx){
+        System.out.println("visitArrayVariable");
+        String id = ctx.getChild(0).getText();
+        String number = visit(ctx.getChild(2));
+        if(number.equals("int")){
+            if((symbolTablePerScope.peek().verify(id, 0) != 0) && (number.equals("int"))){
+                Integer scope_number= symbolTablePerScope.peek().verify(id, 0);
+                if(symbolTablePerScope.peek().isArray(id, scope_number)){
+                    String arrayType = symbolTablePerScope.peek().getType(id, scope_number);
+                    arrayType = arrayType.substring(0, arrayType.length()-2);
+                    return arrayType;
+                }
+            }
+        }
+        errors.append("--Array ");
+        errors.append(id);
+        errors.append(" in line ");
+        errors.append(ctx.getStart().getLine());
+        errors.append("  not found\n");
+        return "Error";
+    }
+    @Override
+    public String visitParameterType(DecafParser.ParameterTypeContext ctx){
+        System.out.println("visitParameterType");
+        if(ctx.getText().equals("int")){
+            return "int";
+        }
+        else if(ctx.getText().equals("char")){
+            return "char";
+        }
+        else if(ctx.getText().equals("boolean")){
+            return "boolean";
+        }
+        return "Error";
     }
 
     /**
@@ -321,10 +360,10 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
     }
     @Override
     public String visitLocation(DecafParser.LocationContext ctx){
+        // TODO view cases of dot
         System.out.println("visitLocation");
         System.out.println(locationDotLocation);
         return visitChildren(ctx);
-
 
     }
 
@@ -344,6 +383,16 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
             //varType (ID [ NUM ] ;)
             // If variable is a array
             if(ctx.getChildCount() == 6){
+
+                String type = visit(ctx.getChild(3));
+                /*if(!type.equals("int")){
+                    errors.append("***Error 9.***\n-->Decaf.ExpressionArrayException\n ");
+                    errors.append("---> on variable: "+id+",");
+                    errors.append(" in line: ");
+                    errors.append(ctx.getStart().getLine());
+                    System.out.println(errors);
+                    return "Error";
+                }*/
                 Integer arraySize = Integer.parseInt(ctx.getChild(3).getText());
                 System.out.println(arraySize);
                 if(arraySize<=0){
@@ -352,6 +401,7 @@ public class EvalVisitor extends DecafBaseVisitor<String> {
                     errors.append(" in line: ");
                     errors.append(ctx.getStart().getLine());
                     System.out.println(errors);
+                    return "Error";
                 }
                 varType = varType + "[]";
                 symbolTablePerScope.peek().insert(id, new Symbol(id, true, arraySize, varType));
