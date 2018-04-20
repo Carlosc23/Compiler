@@ -2,6 +2,7 @@ package gui;
 
 import grammar.DecafLexer;
 import grammar.DecafParser;
+import intermediate.EvalIntermediateVisitor;
 import javafx.application.Application;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
@@ -184,8 +185,9 @@ public class Main extends Application {
                     Arrays.asList(parser.getRuleNames()), tree
             );
             EvalVisitor eval = new EvalVisitor();
+            EvalIntermediateVisitor eval2 = new EvalIntermediateVisitor();
             System.out.println("Llegue hasta aqui");
-            System.out.println(eval.visit(tree));
+            System.out.println(eval2.visit(tree));
             System.out.println("Llegue hasta aqui dos veces");
             //System.out.print(tree.toStringTree(parser));
             // String arbol = tree.toStringTree(parser);
