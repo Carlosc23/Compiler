@@ -8,7 +8,6 @@ public class Operator {
     public static final String LAB_ADD = "ADD";
     public static final String LAB_SUB = "SUB";
     public static final String LAB_MULT = "MULT";
-    public static final String LAB_DIVIDE = "DIVIDE";
     public static final String LAB_DIV = "DIV";
     public static final String LAB_MOD = "MOD";
     public static final String LAB_OR = "OR";
