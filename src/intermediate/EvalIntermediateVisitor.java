@@ -271,26 +271,30 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     public String visitOrExpression(DecafParser.OrExpressionContext ctx) {
         System.out.println("visitOrExpressionInter");
         System.out.println(ctx.getChildCount());
+        String t = "t";
         // If it the type exp || exp
         if (ctx.getChildCount() == 3) {
             //orExpression OR andExpression
             String orExpression = visit(ctx.getChild(0));
-            String or = visit(ctx.getChild(1));
+            String or = ctx.getChild(1).getText();
             String andExpression = visit(ctx.getChild(2));
             //print
             System.out.println("**orExpressionType : " + orExpression);
             System.out.println("**or : " + or);
             System.out.println("**andExpressionType : " + andExpression);
-            if (orExpression.equals(andExpression)) {
-                return "boolean";
+            t+=counter;
+            if (or.equals("||")){
+                Quadruple function = new Quadruple(orExpression,andExpression,t,LAB_OR);
+                listInterCode.peek().addQuadruple(function);
             }
+            counter+=1;
+            return t;
         } else {
             //andExpression
             String andExpression = visit(ctx.getChild(0));
             System.out.println("**andExpressionType : " + andExpression);
             return andExpression;
         }
-        return "";
     }
 
     @Override
