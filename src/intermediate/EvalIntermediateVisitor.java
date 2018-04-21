@@ -297,23 +297,25 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     public String visitAndExpression(DecafParser.AndExpressionContext ctx) {
         System.out.println("visitAndExpression");
         System.out.println(String.valueOf(ctx.getChildCount()));
+        String t = "t";
         if(ctx.getChildCount() == 3){
             //andExpression AND equalsExpression
             String andExpression = visit(ctx.getChild(0));
-            String and = visit(ctx.getChild(1));
+            System.out.println("--------------------------------------");
+            String and = ctx.getChild(1).getText();
+            System.out.println("--------------------------------------");
             String equalsExpression = visit(ctx.getChild(2));
             //print
             System.out.println("**andExpressionType : "+andExpression);
             System.out.println("**and : "+and);
             System.out.println("**equalsExpressionType : "+equalsExpression);
-            if(!andExpression.equals(equalsExpression)){
-                //errors.append("--AndExpression in line ");
-                //errors.append(ctx.getStart().getLine());
-                //errors.append(" the types are different\n");
-                return andExpression;
-            } else {
-                return "Error";
+            t+=counter;
+            if (and.equals("&&")){
+                Quadruple function = new Quadruple(andExpression,equalsExpression,t,LAB_AND);
+                listInterCode.peek().addQuadruple(function);
             }
+            counter+=1;
+            return t;
         } else {
             //equalsExpression
             String equalsExpression = visitChildren(ctx);
@@ -448,10 +450,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
             }
 
             counter+=1;
-            //Return Error if types are different, and both most be int
-            if((mulDivExpression.equals(prExpression)) && (mulDivExpression.equals("int"))){
-                return mulDivExpression;
-            }
+
         } else {
             //prExpression
             String prExpression = visitChildren(ctx);
