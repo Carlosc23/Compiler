@@ -24,7 +24,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     public EvalIntermediateVisitor() {
         globalCode = new Intercode();
         methodReturnType = "";
-        counter = 0;
+        counter = 1;
     }
 
     //Declaration Scope
@@ -183,17 +183,6 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         return "";
     }
 
-    /**
-     * @param ctx
-     * @return
-     */
-    @Override
-    public String visitBasic(DecafParser.BasicContext ctx) {
-        System.out.println("visitBasic");
-        String result = visitChildren(ctx); // Children could be call of methods
-        return result;
-    }
-
     @Override
     public String visitBasicExpression(DecafParser.BasicExpressionContext ctx) {
         System.out.println("visitBasicExpression");
@@ -267,6 +256,39 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         return "";
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     *
+     * @param ctx
+     */
+    @Override
+    public String visitExpressionInP(DecafParser.ExpressionInPContext ctx) {
+        return visit(ctx.getChild(1));
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     *
+     * @param ctx
+     */
+    @Override
+    public String visitBasic(DecafParser.BasicContext ctx) {
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public String visitPrExpression(DecafParser.PrExpressionContext ctx) {
+        System.out.println("visitPrExpressionInter");
+        String result = visitChildren(ctx);
+        System.out.println("Darle la vuelta al mundo "+result);
+        return result;
+    }
     @Override
     public String visitOrExpression(DecafParser.OrExpressionContext ctx) {
         System.out.println("visitOrExpressionInter");
@@ -292,7 +314,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         } else {
             //andExpression
             String andExpression = visit(ctx.getChild(0));
-            System.out.println("**andExpressionType : " + andExpression);
+            System.out.println("--andExpressionType : " + andExpression);
             return andExpression;
         }
     }
@@ -323,7 +345,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         } else {
             //equalsExpression
             String equalsExpression = visitChildren(ctx);
-            System.out.println("**equalsExpressionType : "+equalsExpression);
+            System.out.println("--equalsExpressionType : "+equalsExpression);
             return equalsExpression;
         }
     }
@@ -350,7 +372,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         else {
             //relationExpression
             String relationExpression = visit(ctx.getChild(0));
-            System.out.println("**relationExpressionType : "+relationExpression);
+            System.out.println("--relationExpressionType : "+relationExpression);
             return relationExpression;
         }
         return "";
@@ -376,13 +398,11 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         else {
             //addSubsExpression
             String addSubsExpression = visit(ctx.getChild(0));
-            System.out.println("**addSubsExpression : "+addSubsExpression);
+            System.out.println("--addSubsExpression : "+addSubsExpression);
             return addSubsExpression;
         }
         return "";
     }
-
-    //AddSubs and MulDiv operations
 
     @Override
     public String visitAddSubsExpression(DecafParser.AddSubsExpressionContext ctx){
@@ -422,7 +442,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         } else {
             //MulDivExpression
             String mulDivExpression = visitChildren(ctx);
-            System.out.println("**mulDivExpressionType : "+mulDivExpression);
+            System.out.println("--mulDivExpressionType : "+mulDivExpression);
             return mulDivExpression;
         }
         return t;
@@ -458,16 +478,11 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         } else {
             //prExpression
             String prExpression = visitChildren(ctx);
-            System.out.println("**prExpressionType : "+prExpression);
+            System.out.println("--prExpressionType : "+prExpression);
             return prExpression;
         }
         return t;
     }
 
-    @Override
-    public String visitStructDeclaration(DecafParser.StructDeclarationContext ctx){
-        System.out.println("visitStructDeclaration");
-        return "";
-    }
 
 }
