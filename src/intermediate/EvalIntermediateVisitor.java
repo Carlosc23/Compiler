@@ -8,9 +8,7 @@ import semantic.SymbolTable;
 import java.util.ArrayList;
 import java.util.Stack;
 
-import static intermediate.Operator.LAB_ASSIGN;
-import static intermediate.Operator.LAB_FUNCEND;
-import static intermediate.Operator.LAB_FUNCSTART;
+import static intermediate.Operator.*;
 
 public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     /* Attributes*/
@@ -18,6 +16,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     private Stack<Intercode> listInterCode = new Stack<>();
     private Intercode globalCode;
     private String methodReturnType;
+    private int counter;
 
     /**
      * Constructor that initialize variables
@@ -25,6 +24,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     public EvalIntermediateVisitor() {
         globalCode = new Intercode();
         methodReturnType = "";
+        counter = 0;
     }
 
     //Declaration Scope
@@ -382,15 +382,26 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     public String visitAddSubsExpression(DecafParser.AddSubsExpressionContext ctx){
         System.out.println("visitAddSubsExpression");
         System.out.println(String.valueOf(ctx.getChildCount()));
+        String t = "t";
         if(ctx.getChildCount() == 3){
+            System.out.println("The reason");
+            System.out.println(ctx.getChild(0).getText());
+            System.out.println(ctx.getChild(1).getText());
+            System.out.println(ctx.getChild(2).getText());
             //addSubsExpression as_op mulDivExpression
             String addSubsExpression = visit(ctx.getChild(0));
             String as_op = ctx.getChild(1).getText();
             String mulDivExpression = visit(ctx.getChild(2));
             //print
+            System.out.println("##############################################################");
             System.out.println("**addSubsExpressionType : "+addSubsExpression);
             System.out.println("**as_op : "+as_op);
             System.out.println("**mulDivExpressionType : "+mulDivExpression);
+            t+=counter;
+            Quadruple function = new Quadruple(addSubsExpression,mulDivExpression,t,LAB_ADD);
+            listInterCode.peek().addQuadruple(function);
+            counter+=1;
+            System.out.println("##############################################################");
             //Return Error if types are different, and both most be int
             if((addSubsExpression.equals(mulDivExpression)) && (addSubsExpression.equals("int"))){
                 return addSubsExpression;
@@ -401,7 +412,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
             System.out.println("**mulDivExpressionType : "+mulDivExpression);
             return mulDivExpression;
         }
-        return "";
+        return t;
 
     }
 
@@ -409,6 +420,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     public String visitMulDivExpression(DecafParser.MulDivExpressionContext ctx){
         System.out.println("visitMulDivExpression");
         System.out.println(String.valueOf(ctx.getChildCount()));
+        String t = "t";
         if(ctx.getChildCount() == 3){
             //mulDivExpression md_op prExpression
             String mulDivExpression = visit(ctx.getChild(0));
@@ -418,6 +430,10 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
             System.out.println("**mulDivExpressionType : "+mulDivExpression);
             System.out.println("**md_op : " + md_op);
             System.out.println("**prExpressionType : "+prExpression);
+            t+=counter;
+            Quadruple function = new Quadruple(mulDivExpression,prExpression,t,LAB_MULT);
+            listInterCode.peek().addQuadruple(function);
+            counter+=1;
             //Return Error if types are different, and both most be int
             if((mulDivExpression.equals(prExpression)) && (mulDivExpression.equals("int"))){
                 return mulDivExpression;
@@ -428,7 +444,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
             System.out.println("**prExpressionType : "+prExpression);
             return prExpression;
         }
-        return "";
+        return t;
     }
 
     @Override
