@@ -438,8 +438,15 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
             System.out.println("**md_op : " + md_op);
             System.out.println("**prExpressionType : "+prExpression);
             t+=counter;
-            Quadruple function = new Quadruple(mulDivExpression,prExpression,t,LAB_MULT);
-            listInterCode.peek().addQuadruple(function);
+            if (md_op.equals("*")){
+                Quadruple function = new Quadruple(mulDivExpression,prExpression,t,LAB_MULT);
+                listInterCode.peek().addQuadruple(function);
+            }
+            else{
+                Quadruple function = new Quadruple(mulDivExpression,prExpression,t,LAB_DIV);
+                listInterCode.peek().addQuadruple(function);
+            }
+
             counter+=1;
             //Return Error if types are different, and both most be int
             if((mulDivExpression.equals(prExpression)) && (mulDivExpression.equals("int"))){
