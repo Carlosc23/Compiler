@@ -375,16 +375,21 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         System.out.println("visitIfBlock");
         String l = "l";
         l+=counterLab;
+
         //System.out.println("/////////////////////////////");
-        String exp = ctx.getChild(2).getText();
+        String exp = visit(ctx.getChild(2));
         //System.out.println("/////////////////////////////");
         Quadruple function = new Quadruple("if",exp,l,LAB_GOTO);
         listInterCode.peek().addQuadruple(function);
+        Intercode scopeCode = new Intercode();
+        listInterCode.push(scopeCode);
         System.out.println("/////////////////////////////");
         String returnn = visit(ctx.getChild(4));
         System.out.println("/////////////////////////////");
         System.out.println("/-----------------------/");
+        listInterCode.pop();
         String elseblock = visit(ctx.getChild(5));
+        listInterCode.pop();
         System.out.println("/-----------------------/");
         System.out.println("-----------------------");
         System.out.println(exp);
@@ -394,6 +399,21 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         return "";
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     *
+     * @param ctx
+     */
+    @Override
+    public String visitElseBlock(DecafParser.ElseBlockContext ctx) {
+        System.out.println("visitElseBlockInter");
+        Intercode scopeCode = new Intercode();
+        listInterCode.push(scopeCode);
+        return visitChildren(ctx);
+    }
 
     /**
      * @param ctx
@@ -539,18 +559,40 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     public String visitRelationExpression(DecafParser.RelationExpressionContext ctx){
         System.out.println("visitRelationExpression");
         System.out.println(String.valueOf(ctx.getChildCount()));
+        String t = "t";
         if(ctx.getChildCount() == 3){
             //relationExpression rel_op addSubsExpression
             String relationExpression = visit(ctx.getChild(0));
-            String rel_op = visit(ctx.getChild(1));
+            String rel_op = ctx.getChild(1).getText();
             String addSubsExpression = visit(ctx.getChild(2));
             //print
             System.out.println("**relationExpresionType : "+relationExpression);
             System.out.println("**rel_op : "+rel_op);
             System.out.println("**addSubsExpression : "+addSubsExpression);
-            if((relationExpression.equals(addSubsExpression)) && (relationExpression.equals("int"))){
-                return "boolean";
+            addTempVar(relationExpression);
+            addTempVar(addSubsExpression);
+            t+=counter;
+            String newLoc1 = recorrer(relationExpression);
+            String newLoc2 = recorrer(addSubsExpression);
+            if (rel_op.equals(">")){
+                Quadruple function = new Quadruple(newLoc1,newLoc2,t,LAB_GREATER);
+                listInterCode.peek().addQuadruple(function);
             }
+            else if (rel_op.equals("<")){
+                Quadruple function = new Quadruple(newLoc1,newLoc2,t,LAB_GREATER);
+                listInterCode.peek().addQuadruple(function);
+            }
+            if (rel_op.equals(">=")){
+                Quadruple function = new Quadruple(newLoc1,newLoc2,t,LAB_GREATERTEQUAL);
+                listInterCode.peek().addQuadruple(function);
+            }
+            if (rel_op.equals("<=")){
+                Quadruple function = new Quadruple(newLoc1,newLoc2,t,LAB_LESSEQUAL);
+                listInterCode.peek().addQuadruple(function);
+            }
+            counter+=1;
+            return t;
+
         }
         else {
             //addSubsExpression
@@ -558,7 +600,6 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
             System.out.println("--addSubsExpression : "+addSubsExpression);
             return addSubsExpression;
         }
-        return "";
     }
 
     /**

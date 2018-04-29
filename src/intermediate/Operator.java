@@ -15,6 +15,8 @@ public class Operator {
     public static final String LAB_NOT = "NOT";
     public static final String LAB_LESS = "LESS";
     public static final String LAB_GREATER = "GREATER";
+    public static final String LAB_LESSEQUAL = "LESS OR EQUAL";
+    public static final String LAB_GREATERTEQUAL = "GREATER OR EQUAL";
     public static final String LAB_EQUALS = "EQUALS";
     public static final String LAB_GOTO = "GOTO";
     public static final String LAB_CALL = "CALL";
