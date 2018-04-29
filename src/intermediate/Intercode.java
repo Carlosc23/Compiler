@@ -1,6 +1,7 @@
 package intermediate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /*
 @author: Carlos Calderon
@@ -11,7 +12,7 @@ Class that represents a template to intermediate code
 public class Intercode {
 
     ArrayList<Quadruple> listQuad;
-    int tempVariables = 0;
+    HashMap<String,String> listRegisters= new HashMap<String,String>();
 
     public Intercode() {
         listQuad = new ArrayList<>();
