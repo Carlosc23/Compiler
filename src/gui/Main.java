@@ -36,6 +36,8 @@ public class Main extends Application {
     @FXML
     private TextArea panelOutput;
     @FXML
+    private TextArea panelIntermediate;
+    @FXML
     private AnchorPane panelInput;
     @FXML
     private CodeEditor editor;
@@ -270,7 +272,7 @@ public class Main extends Application {
     private void attach(){
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(new File("C:\\Users\\Carlos Calderón\\IdeaProjects\\Compiler\\src\\programs"));
+        fileChooser.setInitialDirectory(new File("C:\\Users\\Carlos Calderón\\IdeaProjects\\Compiler\\src\\interprograms"));
         File selectedFile = fileChooser.showOpenDialog(null);
 
         if (selectedFile != null) {
