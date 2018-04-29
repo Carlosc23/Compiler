@@ -1,13 +1,14 @@
-                 class Hola{
+     class Hola{
+
+int a;
+int b;
+int c;
 void main(){
-
- int a;
- int b;
-
  a = 0;
  b = 1;
+ c = a+b;
 
+}
 
 }
 
-}

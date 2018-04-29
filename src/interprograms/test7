@@ -1,14 +1,14 @@
 
 class Program x {
 
-int InputInt(){
-	return 0;
+int OutputInt(){
+	return n;
 }
 
 int fibonacci(int n){
 	int r;
     if (n==0){
-		r=1;
+		r=0;
 	}
     else{
         if (n==1){
@@ -28,6 +28,7 @@ void main(){
 	i = 0;
 	while(i<=20){
 		f = fibonacci(i);
+		OutputInt(f);
 		i = i + 1;
 	    }
     }

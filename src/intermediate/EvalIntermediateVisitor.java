@@ -532,6 +532,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     public String visitEqualsExpression(DecafParser.EqualsExpressionContext ctx){
         System.out.println("visitEqualsExpression");
         System.out.println(String.valueOf(ctx.getChildCount()));
+        String t = "t";
         if(ctx.getChildCount() == 3){
             //equalsExpression eq_op relationExpression
             String equalsExpression = visit(ctx.getChild(0));
@@ -541,10 +542,17 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
             System.out.println("**equalsExpressionType : "+equalsExpression);
             System.out.println("**eq_op : "+eq_op);
             System.out.println("**relationExpressionType : "+relationExpression);
-            //both most be boolean
-            if(equalsExpression.equals(relationExpression)){
-                return "boolean";
+            addTempVar(equalsExpression);
+            addTempVar(relationExpression);
+            t+=counter;
+            String newLoc1 = recorrer(equalsExpression);
+            String newLoc2 = recorrer(relationExpression);
+            if (eq_op.equals(">")){
+                Quadruple function = new Quadruple(newLoc1,newLoc2,t,LAB_GREATER);
+                listInterCode.peek().addQuadruple(function);
             }
+            counter+=1;
+            return t;
         }
         else {
             //relationExpression
@@ -552,7 +560,6 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
             System.out.println("--relationExpressionType : "+relationExpression);
             return relationExpression;
         }
-        return "";
     }
 
     @Override
