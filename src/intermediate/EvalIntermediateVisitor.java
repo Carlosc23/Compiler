@@ -269,6 +269,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         return "";
     }
     void addTempVar(String var){
+        // TODO verify nested scopes (identify with a boolean or an id the global scope)
         if (listInterCode.size()==1){
             System.out.println("Estoy en el global"+var+"G["+counterG+"]");
             if (!listInterCode.peek().listRegisters.containsKey(var)){
@@ -422,6 +423,15 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     @Override
     public String visitWhileBlock(DecafParser.WhileBlockContext ctx) {
         System.out.println("visitWhileBlock");
+        String l = "l";
+        l+=counterLab;
+        String exp = visit(ctx.getChild(2));
+        Quadruple function = new Quadruple("while",exp,l,LAB_GOTO);
+        listInterCode.peek().addQuadruple(function);
+        Intercode scopeCode = new Intercode();
+        listInterCode.push(scopeCode);
+        String block = visit(ctx.getChild(4));
+        listInterCode.pop();
         return "";
     }
 
@@ -536,7 +546,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         if(ctx.getChildCount() == 3){
             //equalsExpression eq_op relationExpression
             String equalsExpression = visit(ctx.getChild(0));
-            String eq_op = visit(ctx.getChild(1));
+            String eq_op = ctx.getChild(1).getText();
             String relationExpression = visit(ctx.getChild(2));
             //print
             System.out.println("**equalsExpressionType : "+equalsExpression);
@@ -547,8 +557,8 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
             t+=counter;
             String newLoc1 = recorrer(equalsExpression);
             String newLoc2 = recorrer(relationExpression);
-            if (eq_op.equals(">")){
-                Quadruple function = new Quadruple(newLoc1,newLoc2,t,LAB_GREATER);
+            if (eq_op.equals("==")){
+                Quadruple function = new Quadruple(newLoc1,newLoc2,t,LAB_EQUALS);
                 listInterCode.peek().addQuadruple(function);
             }
             counter+=1;
@@ -586,7 +596,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
                 listInterCode.peek().addQuadruple(function);
             }
             else if (rel_op.equals("<")){
-                Quadruple function = new Quadruple(newLoc1,newLoc2,t,LAB_GREATER);
+                Quadruple function = new Quadruple(newLoc1,newLoc2,t,LAB_LESS);
                 listInterCode.peek().addQuadruple(function);
             }
             if (rel_op.equals(">=")){
