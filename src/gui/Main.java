@@ -189,7 +189,16 @@ public class Main extends Application {
             EvalVisitor eval = new EvalVisitor();
             EvalIntermediateVisitor eval2 = new EvalIntermediateVisitor();
             System.out.println("Llegue hasta aqui");
+            System.out.println(eval.visit(tree));
             System.out.println(eval2.visit(tree));
+
+            eval2.imprimir();
+
+            System.out.println("||||||||||||||||||||||||||||");
+            //System.out.println(eval2.decode());
+            if (eval.getErrors().toString().equals("")){
+                panelIntermediate.setText(eval2.decode());
+            }
             System.out.println("Llegue hasta aqui dos veces");
             //System.out.print(tree.toStringTree(parser));
             // String arbol = tree.toStringTree(parser);
