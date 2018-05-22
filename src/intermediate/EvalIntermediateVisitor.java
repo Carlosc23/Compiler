@@ -5,10 +5,8 @@ import grammar.DecafParser;
 import semantic.Symbol;
 import semantic.SymbolTable;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
+import java.util.regex.Pattern;
 
 import static intermediate.Operator.*;
 
@@ -16,11 +14,189 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     /* Attributes*/
     private Integer scope_counter; // id to have control in where scope the compilation goes
     private Stack<Intercode> listInterCode = new Stack<>();
+    private ArrayList<Intercode> listInterCode2 = new ArrayList<>();
     private Intercode globalCode;
     private String methodReturnType;
     private int counter,counterLab;
     private int counterG, counterL;
+    private static String code = "";
 
+   /* public String decode(){
+        System.out.println("El tamano del stack es: "+listInterCode.size());
+        LinkedList<Intercode> listInterCode2 = new LinkedList<Intercode>(listInterCode);
+        System.out.println("size"+listInterCode2.size());
+        for (int i =0;i<=listInterCode2.size()+1;i++){
+            System.out.println(i);
+            for (Quadruple q : listInterCode2.get(i).listQuad){
+                if (q.getOp().equals("ASSIGN")){
+                    System.out.println("MOV "+q.getRes()+","+q.getDir1());
+                }
+                else if (q.getOp().equals("FUNC BEGIN")){
+                    System.out.println("FUNC BEGIN "+q.getRes());
+                }
+                else if (q.getOp().equals("FUNC END")){
+                    System.out.println("FUNC END ");
+                }
+            }
+        }
+
+        System.out.println("flute"+listInterCode2.get(0).listQuad.toString());
+        return "";
+    }*/
+   public String decode(ArrayList<Quadruple> Quadruples){
+       System.out.println("..............................");
+       for (Quadruple q: Quadruples){
+           System.out.println(q.getOp());
+
+           if (q.getOp().equals("ASSIGN")){
+               System.out.println("MOV "+q.getRes()+","+q.getDir1());
+               code+="MOV "+q.getRes()+","+q.getDir1()+"\n";
+           }
+           else if (q.getOp().equals("FUNC BEGIN")){
+               System.out.println("FUNC BEGIN "+q.getRes());
+               code +="FUNC BEGIN "+q.getRes()+"\n";
+           }
+           else if (q.getOp().equals("FUNC END")){
+               System.out.println("FUNC END ");
+               code +="FUNC END \n";
+           }
+           else if(q.getOp().equals("ADD") ||q.getOp().equals("SUB") ||q.getOp().equals("DIV") ||q.getOp().equals("MULT") ){
+               System.out.println(q.getOp()+" "+q.getRes()+","+q.getDir1()+", "+q.getDir2());
+               code+= q.getOp()+" "+q.getRes()+","+q.getDir1()+", "+q.getDir2()+"\n";
+           }
+           else if(q.getOp().equals("GREATER")){
+               code+= "CMP "+q.getDir1()+", "+q.getDir2()+"\n";
+               code+= "JG "+disarmif(Quadruples,q)+"\n";
+           }
+           else if(q.getOp().equals("LESS")){
+               code+= "CMP "+q.getDir1()+", "+q.getDir2()+"\n";
+               code+= "JNLE "+disarmif(Quadruples,q)+"\n";
+           }
+           else if(q.getOp().equals(LAB_EQUALS)){
+               code+= "CMP "+q.getDir1()+", "+q.getDir2()+"\n";
+               code+= "JE "+disarmif(Quadruples,q)+"\n";
+               System.out.println("CMP "+q.getDir1()+", "+q.getDir2()+"\n");
+               System.out.println("JE "+disarmif(Quadruples,q)+"\n");
+           }
+
+           else if(q.getOp().equals("GOTO") && q.getDir1().equals("if")){
+               code+= q.getRes()+":\n";
+           }
+           else if(q.getOp().equals("GOTO") && q.getDir1().equals("while")){
+               code+= q.getRes()+":\n";
+           }
+           else if(q.getOp().equals("END WHILE") && q.getDir1().equals("while")){
+               code+= "loop: "+q.getRes()+"\n";
+           }
+           else if(q.getOp().equals("PARAM")){
+               code+= q.getOp()+" "+q.getRes()+"\n";
+           }
+           else if(q.getOp().equals("CALL")){
+               code+= q.getOp()+" "+q.getDir1()+"\n";
+               if(q.getRes()!=null){
+                   code+= "STORE "+q.getDir1()+"in "+q.getRes()+"\n";
+               }
+           }
+           else if (q.getOp().equals("POP")){
+                code+=q.getOp()+" "+q.getRes()+"\n";
+           }
+
+       }
+       System.out.println("..............................");
+       return "";
+   }
+   public String disarmif(ArrayList<Quadruple> Quadruples,Quadruple q){
+       int index = Quadruples.indexOf(q);
+       for (int i = index; i<=Quadruples.size();i++){
+           if (Quadruples.get(i).getDir1().equals("if")){
+               return Quadruples.get(i).getOp()+" "+Quadruples.get(i).getRes();
+           }
+           else if (Quadruples.get(i).getDir1().equals("while")){
+               return Quadruples.get(i).getOp()+" "+Quadruples.get(i).getRes();
+           }
+
+
+       }
+       return "";
+   }
+   public String decode(){
+       return code;
+   }
+   public void imprimir(){
+       System.out.println("///////////////////////////////////");
+       code = "";
+       String fin = "";
+       for (Intercode i: listInterCode2){
+           for (Quadruple q: i.listQuad){
+               System.out.println(q);
+               if (q.getOp().equals("ASSIGN")){
+                   //System.out.println("MOV "+q.getRes()+","+q.getDir1());
+                   code+="MOV "+q.getRes()+","+q.getDir1()+"\n";
+               }
+               else if (q.getOp().equals("FUNC BEGIN")){
+                   //System.out.println("FUNC BEGIN "+q.getRes());
+                   code +="FUNC BEGIN "+q.getRes()+"\n";
+               }
+               else if (q.getOp().equals("FUNC END")){
+                   //System.out.println("FUNC END ");
+                   code +="FUNC END \n";
+               }
+               else if(q.getOp().equals("ADD") ||q.getOp().equals("SUB") ||q.getOp().equals("DIV") ||q.getOp().equals("MULT") ){
+                   //System.out.println(q.getOp()+" "+q.getRes()+","+q.getDir1()+", "+q.getDir2());
+                   code+= q.getOp()+" "+q.getRes()+","+q.getDir1()+", "+q.getDir2()+"\n";
+               }
+               else if(q.getOp().equals("GREATER")){
+                   code+= "CMP "+q.getDir1()+", "+q.getDir2()+"\n";
+                   code+= "JG "+disarmif(i.listQuad,q)+"\n";
+               }
+               else if(q.getOp().equals("LESS")){
+                   code+= "CMP "+q.getDir1()+", "+q.getDir2()+"\n";
+                   code+= "JNLE "+disarmif(i.listQuad,q)+"\n";
+               }
+               else if(q.getOp().equals(LAB_EQUALS)){
+                   code+= "CMP "+q.getDir1()+", "+q.getDir2()+"\n";
+                   code+= "JE "+disarmif(i.listQuad,q)+"\n";
+                   //System.out.println("CMP "+q.getDir1()+", "+q.getDir2()+"\n");
+                   //System.out.println("JE "+disarmif(i.listQuad,q)+"\n");
+               }
+
+               else if(q.getOp().equals("GOTO") && q.getDir1().equals("if")){
+                   code+= q.getRes()+":\n";
+               }
+               else if(q.getOp().equals("END IF1")){
+                   code+= "GOTO "+ "END IF"+"\n";
+               }
+               else if(q.getOp().equals("END IF")){
+                   code+= q.getOp()+"\n";
+               }
+               else if(q.getOp().equals("GOTO") && q.getDir1().equals("while")){
+                   code+= q.getRes()+":\n";
+               }
+               else if(q.getOp().equals("END WHILE") && q.getDir1().equals("while")){
+                   code+= "loop: "+q.getRes()+"\n";
+               }
+               else if(q.getOp().equals("PARAM")){
+                   code+= q.getOp()+" "+q.getRes()+"\n";
+               }
+               else if(q.getOp().equals("CALL")){
+                   code+= q.getOp()+" "+q.getDir1()+"\n";
+                   if(q.getRes()!=null){
+                       code+= "STORE "+q.getDir1()+"in "+q.getRes()+"\n";
+                   }
+               }
+               else if (q.getOp().equals("POP")){
+                   code+=q.getOp()+" "+q.getRes()+"\n";
+               }
+               else if (q.getOp().equals("FUNC END")){
+                    fin = "FUNC END \n";
+
+               }
+
+           }
+           code+=fin;
+
+       }
+   }
     /**
      * Constructor that initialize variables
      */
@@ -28,10 +204,12 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         globalCode = new Intercode();
         methodReturnType = "";
         counter = 1;
-        counterLab=1;
+        counterLab=0;
         counterG = 0 ;
         counterL = 0;
         listInterCode.push(globalCode);
+        listInterCode2.add(globalCode);
+        //listInterCode2 = new Queue<>();
     }
 
     //Declaration Scope
@@ -47,6 +225,8 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     public String visitProgram(DecafParser.ProgramContext ctx) {
         System.out.println("visitProgramInter");
         String result = visitChildren(ctx);
+        System.out.println(listInterCode.peek().listQuad.toString());
+        decode(listInterCode.peek().listQuad);
         return "";
     }
 
@@ -62,8 +242,7 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     public String visitMethodDeclaration(DecafParser.MethodDeclarationContext ctx) {
         System.out.println("visitMethodDeclarationInter");
         Quadruple function;
-        Intercode scopeCode = new Intercode();
-        listInterCode.push(scopeCode);
+
         ArrayList<String> parameters = new ArrayList<>(); // List of parameters of a method
         String signature = ""; // String to represent the signature of a method
         String id = ctx.getChild(1).getText();
@@ -74,6 +253,10 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         }
         String varType = ctx.getChild(0).getText();
         methodReturnType = varType;
+
+        Intercode scopeCode = new Intercode();
+        listInterCode.push(scopeCode);
+        listInterCode2.add(scopeCode);
         function = new Quadruple(id, LAB_FUNCSTART);
 
         listInterCode.peek().addQuadruple(function);
@@ -84,11 +267,12 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
                 //If the parameter is not a comma
                 if(!ctx.getChild(3+i).getText().equals(",")){
                     System.out.println("Parameter " + i + " " + ctx.getChild(3+i).getText());
-                    t+=counter;
+                    //t+=counter;
                     String aa = ctx.getChild(3+i).getChild(1).getText();
-                    //function = new Quadruple(aa,null,t,LAB_ASSIGN);
+                    //addTempVar(aa);
+                    //function = new Quadruple(aa,null,"L["+counterL+"]",LAB_ASSIGN);
                     //listInterCode.peek().addQuadruple(function);
-                    //counter+=1;
+                    //counterL+=1;
 
                     //Simple Parameter
                     if(ctx.getChild(3+i).getChildCount() == 2){
@@ -111,17 +295,33 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
                 i++;
             }
         }
-
+        //counterL--;
         String result = visitChildren(ctx);
+        System.out.println(listInterCode.peek().listQuad.toString());
+        System.out.println("*****************************");
+        decode(listInterCode.peek().listQuad);
+        System.out.println("*****************************");
         function = new Quadruple(id, LAB_FUNCEND);
         listInterCode.peek().addQuadruple(function);
-        System.out.println(listInterCode.peek().listQuad.toString());
+        listInterCode.pop();
+
+
+
+        counterL = 0;
+        counter = 0;
+        //TODO descomentar esto
+
         return result;
     }
 
     @Override
     public String visitParameterDeclaration(DecafParser.ParameterDeclarationContext ctx) {
         System.out.println("visitParameterDeclaration");
+        String location = ctx.getChild(1).getText();
+        addTempVar(location);
+        String newLoc = recorrer(location);
+        Quadruple function = new Quadruple(location,null,newLoc,LAB_POP);
+        listInterCode.peek().addQuadruple(function);
         return "";
     }
 
@@ -180,9 +380,48 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         return "";
     }
     String recorrer (String location){
+        System.out.println(location);
         Stack<Intercode> tempStack = new Stack<>();
         System.out.println(listInterCode.size());
         tempStack.addAll(listInterCode);
+        System.out.println(tempStack.size());
+        Map<String,String> map = tempStack.peek().listRegisters;
+        System.out.println(location);
+        String newLoc = "";
+        while (tempStack.size()!=0){
+            System.out.println("you and me");
+            System.out.println(tempStack.size());
+            Iterator it = map.keySet().iterator();
+            while(it.hasNext()) {
+
+                String key = (String) it.next();
+                System.out.println("Clave: " + key + " -> Valor: " + map.get(key));
+                if (key.equals(location)){
+                    System.out.println("Clave: " + key + " -> Valor: " + map.get(key));
+                    newLoc = map.get(key);
+                    System.out.println("Retorne");
+                    return newLoc;
+                }
+
+            }
+            tempStack.pop();
+            System.out.println(tempStack.size());
+            if(tempStack.size()!=0){
+                map = tempStack.peek().listRegisters;
+                System.out.println(map.toString());
+            }
+            System.out.println("-----------");
+        }
+
+        return location;
+    }
+    String recorrer (String location,boolean G){
+        Stack<Intercode> tempStack = new Stack<>();
+        System.out.println(listInterCode.size());
+        tempStack.addAll(listInterCode);
+        while(tempStack.size()>1){
+            tempStack.pop();
+        }
         System.out.println(tempStack.size());
         Map<String,String> map = tempStack.peek().listRegisters;
         System.out.println(location);
@@ -201,9 +440,10 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
                 }
 
             }
-            tempStack.pop();
+            //tempStack.pop();
             map = tempStack.peek().listRegisters;
             System.out.println(map.toString());
+            return location;
         }
 
         return newLoc;
@@ -259,11 +499,15 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         if (listInterCode.size()==1){
             System.out.println("Estoy en el global"+id+"G["+counterG+"]");
             listInterCode.peek().listRegisters.put(id,"G["+counterG+"]");
+           // Quadruple function = new Quadruple(id,null,"G["+counterG+"]",LAB_ASSIGN );
+            //listInterCode.peek().addQuadruple(function);
             counterG+=1;
         }
         else{
             System.out.println("Estoy en el local"+id+"L["+counterL+"]");
             listInterCode.peek().listRegisters.put(id,"L["+counterL+"]");
+            //Quadruple function = new Quadruple(id,null,"L["+counterL+"]",LAB_ASSIGN );
+            //listInterCode.peek().addQuadruple(function);
             counterL+=1;
         }
         return "";
@@ -274,15 +518,28 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
             System.out.println("Estoy en el global"+var+"G["+counterG+"]");
             if (!listInterCode.peek().listRegisters.containsKey(var)){
                 listInterCode.peek().listRegisters.put(var,"G["+counterG+"]");
+                Quadruple function = new Quadruple(var,null,"G["+counterG+"]",LAB_ASSIGN );
+                listInterCode.peek().addQuadruple(function);
                 counterG+=1;
             }
 
         }
         else{
-            System.out.println("Estoy en el local"+var+"L["+counterL+"]");
-            if (!listInterCode.peek().listRegisters.containsKey(var)){
-                listInterCode.peek().listRegisters.put(var,"L["+counterL+"]");
-                counterL+=1;
+            Stack<Intercode> tempStack = new Stack<>();
+            System.out.println(listInterCode.size());
+            tempStack.addAll(listInterCode);
+            while (tempStack.size() >1){
+                if (!tempStack.peek().listRegisters.containsKey(var)){
+                    System.out.println("Estoy en el local"+var+"L["+counterL+"]");
+                    listInterCode.peek().listRegisters.put(var,"L["+counterL+"]");
+                    System.out.println("duele");
+                    String var2 = recorrer(var,true);
+                    Quadruple function = new Quadruple(var2,null,"L["+counterL+"]",LAB_ASSIGN );
+                    listInterCode.peek().addQuadruple(function);
+                    counterL+=1;
+                    break;
+                }
+                tempStack.pop();
             }
 
         }
@@ -322,7 +579,8 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         System.out.println("Current"+currentReturnType);
         String l = "l";
         l+=counterLab;
-        Quadruple function = new Quadruple(currentReturnType,null,l,LAB_RETURN );
+        currentReturnType = recorrer (currentReturnType);
+        Quadruple function = new Quadruple(null,null,currentReturnType,LAB_RETURN );
         listInterCode.peek().addQuadruple(function);
         return currentReturnType;
     }
@@ -339,24 +597,42 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
         System.out.println("visitDeclaredMethodCall");
         String id = ctx.getChild(0).getText();
         String t = "t";
+        Pattern pattern = Pattern.compile("[\\d+]");
         String signature="";
+        Quadruple function;
         //It will verify if the children are more than 3, because the minimum children
         // are ID ( ), in case it the call has more than 3 parameters it will enter in this condition
         String metodo = ctx.getText();
+        //t+=counter;
         if(ctx.getChildCount() > 3){
             Integer i = 0;
             while(i<ctx.getChildCount()-3){
                 if(!ctx.getChild(2+i).getText().equals(",")){
+                    t+=counter;
                     System.out.println("Parameter " + i + " " + ctx.getChild(2+i).getText());
-                    signature += visit(ctx.getChild(2+i).getChild(0));
+                    signature = visit(ctx.getChild(2+i).getChild(0));
                     System.out.println("Firma"+signature);
-                    metodo = metodo.replace(ctx.getChild(2+i).getText(),signature);
+                    metodo = metodo.replace(ctx.getChild(2+i).getText(),t);
+                    //String temp = recorrer(signature);
+                    function = new Quadruple(signature,null,t,LAB_PARAM );
+                    listInterCode.peek().addQuadruple(function);
+                    System.out.println("counter: "+counter+ctx.getChild(2+i).getText());
+                    System.out.println(t);
+                    t = pattern.matcher(t).replaceAll("");
+                    System.out.println(t);
+                    counter++;
                 }
                 i++;
             }
         }
+        System.out.println("abuela"+t);
+        System.out.println(counter);
+        //t = t.replace("[^t]","");
+        counter--;
+        t = pattern.matcher(t).replaceAll("");
+        System.out.println("abuela2"+t);
         t+=counter;
-        Quadruple function = new Quadruple(metodo,null,t,LAB_ASSIGN );
+        function = new Quadruple(metodo,null,t,LAB_CALL);
         listInterCode.peek().addQuadruple(function);
         counter+=1;
         return t;
@@ -374,29 +650,45 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     @Override
     public String visitIfBlock(DecafParser.IfBlockContext ctx) {
         System.out.println("visitIfBlock");
+        System.out.println(counterLab);
         String l = "l";
+        counterLab+=1;
         l+=counterLab;
 
         //System.out.println("/////////////////////////////");
         String exp = visit(ctx.getChild(2));
         //System.out.println("/////////////////////////////");
+
         Quadruple function = new Quadruple("if",exp,l,LAB_GOTO);
         listInterCode.peek().addQuadruple(function);
         Intercode scopeCode = new Intercode();
         listInterCode.push(scopeCode);
+        listInterCode2.add(scopeCode);
+
         System.out.println("/////////////////////////////");
         String returnn = visit(ctx.getChild(4));
         System.out.println("/////////////////////////////");
         System.out.println("/-----------------------/");
+
+        System.out.println(listInterCode.peek().listQuad.toString());
+        decode(listInterCode.peek().listQuad);
         listInterCode.pop();
+        //function = new Quadruple("if",null,null,LAB_FIF+"1");
+        //listInterCode.peek().addQuadruple(function);
+        System.out.println("counterLab: "+counterLab);
+
+        //scopeCode = new Intercode();
+        //listInterCode.push(scopeCode);
+
         String elseblock = visit(ctx.getChild(5));
-        listInterCode.pop();
+        //listInterCode.pop();
         System.out.println("/-----------------------/");
         System.out.println("-----------------------");
         System.out.println(exp);
         System.out.println(returnn);
         System.out.println("-----------------------");
-        counterLab+=1;
+        function = new Quadruple("if",null,null,LAB_FIF);
+        listInterCode.peek().addQuadruple(function);
         return "";
     }
 
@@ -411,8 +703,9 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     @Override
     public String visitElseBlock(DecafParser.ElseBlockContext ctx) {
         System.out.println("visitElseBlockInter");
-        Intercode scopeCode = new Intercode();
-        listInterCode.push(scopeCode);
+
+        //Intercode scopeCode = new Intercode();
+        //listInterCode.push(scopeCode);
         return visitChildren(ctx);
     }
 
@@ -424,14 +717,20 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
     public String visitWhileBlock(DecafParser.WhileBlockContext ctx) {
         System.out.println("visitWhileBlock");
         String l = "l";
+        counterLab+=1;
         l+=counterLab;
         String exp = visit(ctx.getChild(2));
         Quadruple function = new Quadruple("while",exp,l,LAB_GOTO);
         listInterCode.peek().addQuadruple(function);
         Intercode scopeCode = new Intercode();
         listInterCode.push(scopeCode);
+        listInterCode2.add(scopeCode);
         String block = visit(ctx.getChild(4));
+        System.out.println(listInterCode.peek().listQuad.toString());
+        decode(listInterCode.peek().listQuad);
         listInterCode.pop();
+        function = new Quadruple("while",null,l,LAB_ENDWHILE);
+        listInterCode.peek().addQuadruple(function);
         return "";
     }
 
@@ -727,6 +1026,15 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
             return prExpression;
         }
         return t;
+    }
+    @Override
+    public String visitStructDeclaration(DecafParser.StructDeclarationContext ctx){
+        System.out.println("visitStructDeclaration");
+        String id = ctx.getChild(1).getText();
+        Quadruple function = new Quadruple(id, LAB_STRUCT);
+        listInterCode.peek().addQuadruple(function);
+        String result = visitChildren(ctx);
+        return "";
     }
 
 
