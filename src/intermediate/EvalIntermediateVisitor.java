@@ -61,8 +61,10 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
                code +="FUNC END \n";
            }
            else if(q.getOp().equals("ADD") ||q.getOp().equals("SUB") ||q.getOp().equals("DIV") ||q.getOp().equals("MULT") ){
+               System.out.println("chingadera");
                System.out.println(q.getOp()+" "+q.getRes()+","+q.getDir1()+", "+q.getDir2());
-               code+= q.getOp()+" "+q.getRes()+","+q.getDir1()+", "+q.getDir2()+"\n";
+               code+= "\"chingadera\""+q.getOp().toLowerCase()+" "+q.getRes().toUpperCase()+","+q.getDir1()+", "+q.getDir2()+"\n";
+               System.out.println(code);
            }
            else if(q.getOp().equals("GREATER")){
                code+= "CMP "+q.getDir1()+", "+q.getDir2()+"\n";
@@ -131,7 +133,16 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
                System.out.println(q);
                if (q.getOp().equals("ASSIGN")){
                    //System.out.println("MOV "+q.getRes()+","+q.getDir1());
-                   code+="MOV "+q.getRes()+","+q.getDir1()+"\n";
+                   //System.out.println("GG: "+""+Integer.parseInt("2");
+                   code += "li $t0,"+ (Integer.parseInt(""+q.getRes().charAt(2))*4)+"\n";
+                   String s =q.getRes();
+                  // s = s.replace(""+q.getRes().charAt(2),"$t0");
+                   //code +=s;
+                   if(!(""+q.getDir1().charAt(q.getDir1().length()-1)).equals("]")){
+                       code+= "addi $s0,$zero,"+q.getDir1().charAt(q.getDir1().length()-1)+"\n";
+                   }
+
+                   code+="MOV "+"$s0"+","+s+"\n";
                }
                else if (q.getOp().equals("FUNC BEGIN")){
                    //System.out.println("FUNC BEGIN "+q.getRes());
@@ -143,7 +154,8 @@ public class EvalIntermediateVisitor extends DecafBaseVisitor<String> {
                }
                else if(q.getOp().equals("ADD") ||q.getOp().equals("SUB") ||q.getOp().equals("DIV") ||q.getOp().equals("MULT") ){
                    //System.out.println(q.getOp()+" "+q.getRes()+","+q.getDir1()+", "+q.getDir2());
-                   code+= q.getOp()+" "+q.getRes()+","+q.getDir1()+", "+q.getDir2()+"\n";
+
+                   code+= q.getOp().toLowerCase()+" "+q.getRes()+","+q.getDir1()+", "+q.getDir2()+"\n";
                }
                else if(q.getOp().equals("GREATER")){
                    code+= "CMP "+q.getDir1()+", "+q.getDir2()+"\n";

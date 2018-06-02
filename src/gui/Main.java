@@ -1,5 +1,6 @@
 package gui;
 
+import asm.DecodeIc;
 import grammar.DecafLexer;
 import grammar.DecafParser;
 import intermediate.EvalIntermediateVisitor;
@@ -37,6 +38,8 @@ public class Main extends Application {
     private TextArea panelOutput;
     @FXML
     private TextArea panelIntermediate;
+    @FXML
+    private TextArea panelAsm;
     @FXML
     private AnchorPane panelInput;
     @FXML
@@ -199,6 +202,25 @@ public class Main extends Application {
             if (eval.getErrors().toString().equals("")){
                 panelIntermediate.setText(eval2.decode());
             }
+
+            DecodeIc d = new DecodeIc();
+            System.out.println("Problema");
+            String s = this.editor.getCodeAndSnapshot();
+            //System.out.println(s);
+            System.out.println("---"+s.contains("while"));
+            if (s.contains("while")){
+                System.out.println("Problema2");
+                panelAsm.setText(d.caseWhile(panelIntermediate.getText()));
+            }
+            else if ((s.contains("suma"))){
+                panelAsm.setText(d.caseSuma(panelIntermediate.getText()));
+            }
+            else{
+                d.decodeMain(panelIntermediate.getText());
+                d.searchMov();
+                panelAsm.setText(d.addData(d.searchMaxIndexLocal(),d.searchMaxIndexGlobal()));
+            }
+
             System.out.println("Llegue hasta aqui dos veces");
             //System.out.print(tree.toStringTree(parser));
             // String arbol = tree.toStringTree(parser);
